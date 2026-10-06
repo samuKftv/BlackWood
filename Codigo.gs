@@ -20,8 +20,8 @@ const CAMPOS_HISTORIA = [
 function hojaHistorias_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(HOJA_HISTORIAS);
-  if (!sh) {
-    sh = ss.insertSheet(HOJA_HISTORIAS);
+  if (!sh) sh = ss.insertSheet(HOJA_HISTORIAS);
+  if (sh.getLastRow() === 0) {
     sh.appendRow(['Fecha de envío', 'Rol (id)', 'Familia', 'Rol', 'Alumna'].concat(CAMPOS_HISTORIA.map(c => c[1])));
     sh.setFrozenRows(1);
   }
@@ -31,8 +31,8 @@ function hojaHistorias_() {
 function hoja_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(HOJA);
-  if (!sh) {
-    sh = ss.insertSheet(HOJA);
+  if (!sh) sh = ss.insertSheet(HOJA);
+  if (sh.getLastRow() === 0) {
     sh.appendRow(COLUMNAS);
     sh.setFrozenRows(1);
   }
@@ -68,7 +68,7 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents || '{}');
     const sh = hoja_();
-    const ids = sh.getRange(1, 1, sh.getLastRow(), 1).getValues().map(r => String(r[0]));
+    const ids = sh.getRange(1, 1, Math.max(sh.getLastRow(), 1), 1).getValues().map(r => String(r[0]));
 
     if (d.action === 'reserve') {
       if (!d.id || !d.alumna) return salida_({ ok: false, error: 'datos' });
