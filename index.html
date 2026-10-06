@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Blackwood, 1926</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Layout: a playbill-style single column; family cards in a grid open a detail sheet; reparto is a live ledger. Dark-first (candlelit mansion), light = aged invitation card. */
+:root{
+  --bg:#141017; --surface:#1d1720; --raise:#251d29; --line:#3a2f3e;
+  --fg:#ece4d6; --muted:#a99c8d; --gold:#c9a45c; --gold-ink:#141017;
+  --ok:#7fb08a; --warn:#d7a34a; --bad:#d06a6a;
+  --f-display:"Marcellus SC","Trajan Pro",Georgia,serif;
+  --f-body:"Spectral",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#f3ede2; --surface:#fbf8f2; --raise:#efe7d9; --line:#d8ccb8;
+  --fg:#231a22; --muted:#6c5f57; --gold:#8a6a26; --gold-ink:#fbf8f2;
+  --ok:#3f7a4c; --warn:#9a6a12; --bad:#a63c3c; color-scheme:light }}
+:root[data-theme="light"]{
+  --bg:#f3ede2; --surface:#fbf8f2; --raise:#efe7d9; --line:#d8ccb8;
+  --fg:#231a22; --muted:#6c5f57; --gold:#8a6a26; --gold-ink:#fbf8f2;
+  --ok:#3f7a4c; --warn:#9a6a12; --bad:#a63c3c; color-scheme:light }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;letter-spacing:.04em;text-wrap:balance;margin:0}
+.label{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* masthead */
+.mast{border-block:1px solid var(--line);padding-block:22px;display:grid;gap:10px;text-align:center}
+.mast h1{font-size:clamp(40px,8vw,76px);line-height:1;color:var(--gold)}
+.mast .sub{color:var(--muted);font-style:italic}
+.deco{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--gold)}
+.deco::before,.deco::after{content:"";height:1px;width:min(120px,20vw);background:currentColor;opacity:.6}
+
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;flex-wrap:wrap;justify-content:center;padding-block:12px;border-bottom:1px solid var(--line);margin-bottom:28px}
+nav.tabs button{background:none;border:1px solid transparent;color:var(--muted);padding:6px 14px;border-radius:999px;font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+nav.tabs button[aria-selected="true"]{color:var(--gold);border-color:var(--gold)}
+nav.tabs button:hover{color:var(--fg)}
+
+section[role=tabpanel]{display:grid;gap:22px}
+.prose{max-width:66ch;margin-inline:auto;display:grid;gap:14px}
+.prose p.drop::first-letter{font-family:var(--f-display);float:left;font-size:3.4em;line-height:.9;padding:6px 10px 0 0;color:var(--gold)}
+.prose .end{font-family:var(--f-display);font-size:22px;color:var(--gold);text-align:center;padding-top:8px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;border:1px solid var(--line);padding:14px 18px;border-radius:4px;background:var(--surface)}
+.facts div{display:grid}
+.facts b{font-weight:600}
+
+.est{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.est .it{border-top:2px solid var(--gold);background:var(--surface);padding:14px 16px;display:grid;gap:4px}
+.est h3{font-size:17px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.sw i{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);display:inline-block}
+
+/* families */
+.fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.fam{all:unset;cursor:pointer;display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--fc);padding:16px 18px;border-radius:4px}
+.fam:hover{background:var(--raise)}
+.fam:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.fam .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.fam h3{font-size:24px}
+.fam .what{color:var(--muted);font-style:italic}
+.fam .tech{font-family:var(--f-mono);font-size:12.5px}
+.count{font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.count.ok{color:var(--ok);border-color:var(--ok)} .count.low{color:var(--warn);border-color:var(--warn)}
+
+.detail{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--fc);border-radius:4px;padding:22px;display:grid;gap:18px}
+.detail .head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:baseline}
+.detail h2{font-size:clamp(28px,5vw,40px)}
+.back{background:none;border:1px solid var(--line);color:var(--fg);padding:6px 12px;border-radius:999px;font-family:var(--f-mono);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.box{border:1px solid var(--line);padding:14px 16px;border-radius:4px;display:grid;gap:6px;min-width:0}
+.before-after{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.before-after>div{padding:14px 16px;display:grid;gap:6px}
+.before-after>div+div{background:var(--raise);border-left:1px solid var(--line)}
+@media (max-width:560px){.before-after>div+div{border-left:0;border-top:1px solid var(--line)}}
+
+.roles{display:grid;gap:10px}
+.role{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:4px;padding:12px 14px;background:var(--bg)}
+.role .who{font-size:14.5px;color:var(--muted)}
+.role.taken{opacity:.92}
+.role.mine{border-color:var(--gold)}
+.btn{background:var(--gold);color:var(--gold-ink);border:0;border-radius:999px;padding:7px 14px;font-family:var(--f-mono);font-size:12.5px;letter-spacing:.04em}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.tag{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.free{color:var(--ok);border-color:var(--ok)}
+
+/* claim form */
+.claim{border:1px dashed var(--gold);border-radius:4px;padding:16px;display:grid;gap:12px;background:var(--bg)}
+.claim .row{display:grid;gap:4px}
+.claim input,.claim select{font:inherit;font-size:16px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:100%}
+.claim .acts{display:flex;gap:8px;flex-wrap:wrap}
+.note{font-size:14.5px;color:var(--muted)}
+.err{color:var(--bad);font-size:14.5px}
+
+/* ledger */
+.status{display:flex;flex-wrap:wrap;gap:10px}
+.status .s{flex:1 1 140px;border:1px solid var(--line);border-left:5px solid var(--fc);padding:10px 12px;border-radius:4px;background:var(--surface);display:grid;gap:2px}
+.status .s b{font-family:var(--f-display);font-weight:400;font-size:18px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:15px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+td .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--fc);margin-right:7px}
+tr:last-child td{border-bottom:0}
+.empty{color:var(--muted);font-style:italic}
+
+/* my character */
+.steps{counter-reset:s;display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;border-bottom:1px solid var(--line);padding-block:8px}
+.steps li::before{content:counter(s);font-family:var(--f-display);color:var(--gold);font-size:20px;text-align:center}
+.example{border-left:3px solid var(--gold);padding:12px 16px;background:var(--surface);display:grid;gap:8px;font-size:15.5px}
+.deliver{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.deliver .box h3{font-size:18px}
+.banner{border:1px solid var(--line);background:var(--surface);padding:10px 14px;border-radius:4px;font-size:14.5px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.detail,.claim{animation:in .25s ease-out}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="deco label">Las Indias Films · Departamento de Caracterización</div>
+    <h1>Blackwood, 1926</h1>
+    <p class="sub">Seis familias. Un eclipse. Una anfitriona muerta al pie de la escalera.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" id="t-historia" aria-controls="p-historia" aria-selected="true">La historia</button>
+    <button role="tab" id="t-familias" aria-controls="p-familias" aria-selected="false">Las familias</button>
+    <button role="tab" id="t-reparto" aria-controls="p-reparto" aria-selected="false">Reparto</button>
+    <button role="tab" id="t-personaje" aria-controls="p-personaje" aria-selected="false">Tu personaje</button>
+  </nav>
+
+  <section role="tabpanel" id="p-historia" aria-labelledby="t-historia">
+    <div class="facts">
+      <div><span class="label">Fecha</span><b>14 de enero de 1926</b></div>
+      <div><span class="label">Lugar</span><b>Mansión Blackwood, en el páramo</b></div>
+      <div><span class="label">Anfitriona</span><b>Severina Blackwood</b></div>
+      <div><span class="label">Motivo</span><b>Renovar el Acuerdo de 1826</b></div>
+    </div>
+    <div class="prose" id="historia"></div>
+    <h2 style="text-align:center;font-size:26px;margin-top:10px">Estética común</h2>
+    <p class="note" style="text-align:center">Obligatoria para todo el reparto.</p>
+    <div class="est" id="estetica"></div>
+  </section>
+
+  <section role="tabpanel" id="p-familias" aria-labelledby="t-familias" hidden>
+    <div id="fam-list">
+      <p class="note" style="margin-bottom:14px">Elige una familia para ver su ficha completa y los roles libres. Cada familia trabaja una técnica principal de caracterización distinta.</p>
+      <div class="fams" id="fams"></div>
+    </div>
+    <div id="fam-detail" hidden></div>
+  </section>
+
+  <section role="tabpanel" id="p-reparto" aria-labelledby="t-reparto" hidden>
+    <div class="banner" id="sync">Conectando con el reparto…</div>
+    <div class="status" id="status"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Familia</th><th>Rol</th><th>Alumna</th><th>Personaje</th><th>Estilo 2D</th></tr></thead>
+        <tbody id="ledger"></tbody>
+      </table>
+    </div>
+    <div id="teacher" class="banner" hidden>
+      <form id="pin-form" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <label for="pin" class="label">Código de docente</label>
+        <input id="pin" type="password" autocomplete="off" style="font:inherit;font-size:16px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:180px">
+        <button class="btn" type="submit">Activar</button>
+        <span id="pin-st" class="note"></span>
+      </form>
+      <p class="note" style="margin-top:6px">Solo la docente puede liberar roles. Las alumnas solo reservan.</p>
+    </div>
+    <p class="note">No se puede repetir rol y cada familia necesita al menos dos personajes. Para reservar, entra en <a href="#familias" data-go="familias" style="color:var(--gold)">Las familias</a> y elige un rol libre.</p>
+  </section>
+
+  <section role="tabpanel" id="p-personaje" aria-labelledby="t-personaje" hidden>
+    <div class="grid2">
+      <div class="box">
+        <span class="label">En la UT1 debes dejar definido</span>
+        <ol class="steps" id="definir"></ol>
+      </div>
+      <div class="example">
+        <span class="label">Ejemplo</span>
+        <p><b>Ilona Várkonyi</b>, matriarca de la familia Várkonyi. Aparenta 60 años y tiene 300. Orgullosa, fría y obsesionada con el linaje. Severina sabía qué le ocurrió a su hijo desaparecido.</p>
+        <p><b>Llegada:</b> piel pálida con escamas de bronce apenas visibles en pómulos y cuello, ojos ámbar, cabello gris en corona trenzada, guantes largos que esconden las garras y vestido negro de cuello alto con bordados en bronce.</p>
+        <p><b>Tras el eclipse:</b> las escamas le cubren media cara, el cuello y los brazos; pupilas de reptil; las garras rompen los guantes; una cresta le brota de la espalda y rasga el vestido.</p>
+        <p><b>Intérprete tipo:</b> actriz de unos 50 años, alta y delgada, rostro alargado y pómulos marcados.</p>
+        <p><b>Técnicas:</b> maquillaje para palidez y envejecimiento; prótesis para escamas, cresta y garras; lentes de contacto; peluca; vestuario preparado para romperse. <b>Estilo:</b> realista.</p>
+      </div>
+    </div>
+    <h2 style="font-size:26px">El entregable de la UT1</h2>
+    <p class="note">Documento de planificación del proyecto, en la plantilla Excel. Nombre del archivo: <span style="font-family:var(--f-mono)">Apellido_Nombre_UT1_planificacion_v01</span>.</p>
+    <div class="deliver">
+      <div class="box"><span class="label">Parte 1</span><h3>Análisis del briefing</h3><p class="note">El encargo con tus palabras, requisitos, restricciones, entregables, criterios de valoración y dudas resueltas. Incluye la ficha de tu personaje.</p></div>
+      <div class="box"><span class="label">Parte 2</span><h3>Pipeline personal</h3><p class="note">Cada fase de UT1 a UT6 adaptada a tu personaje: qué harás, con qué herramienta, qué entregarás y quién lo aprueba.</p></div>
+      <div class="box"><span class="label">Parte 3</span><h3>Cronograma</h3><p class="note">Fechas de inicio y entrega de cada fase, las tres presentaciones marcadas y margen antes de UT4 y UT5.</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ===== CONFIGURACIÓN =====
+   Pega aquí la URL de tu Apps Script (termina en /exec). Instrucciones en LEEME.md */
+const SHEET_URL="";
+/* ========================== */
+const FAM=[
+ {id:"varkonyi",n:"Várkonyi",c:"#b08d57",col:"Bronce",q:"Linaje noble con sangre de dragón",r:"Escamas en pómulos, cuello, manos y espalda; cuernos incipientes; ojos de reptil; uñas en forma de garra",t:"Prótesis de escamas y cuernos",a:"Escamas disimuladas con maquillaje y guantes",e:"Escamas por todo el cuerpo, cuernos y garras que rompen la ropa",roles:["La matriarca anciana","El heredero","El hijo ilegítimo"]},
+ {id:"bathory",n:"Bathory",c:"#9b2c3c",col:"Granate",q:"Aristocracia vampírica",r:"Palidez extrema, venas visibles, ojeras violáceas, colmillos, manos delgadas y envejecidas",t:"Palidez, venas y efecto de piel enferma",a:"Pálidos pero elegantes, con aspecto casi humano",e:"Venas negras, ojos rojos, colmillos visibles y envejecimiento repentino",roles:["La condesa","El recién convertido","El médico de la familia"]},
+ {id:"ashworth",n:"Ashworth",c:"#6fa894",col:"Verde agua",q:"Ahogadas y ninfas de los lagos",r:"Piel azulada y húmeda, labios amoratados, cabello mojado con algas y flores, dedos arrugados por el agua",t:"Efecto húmedo y piel de ahogada",a:"Bellas y melancólicas, solo un poco húmedas",e:"Piel de ahogada, agua que les brota de la boca y cabello enredado",roles:["La novia ahogada","La niña del lago","La institutriz"]},
+ {id:"gevaudan",n:"Gévaudan",c:"#c08a35",col:"Ocre",q:"Familias con rasgos de bestia",r:"Pelaje o plumas en rostro y cuerpo, hocico o pico parcial, orejas animales, garras, dientes afilados",t:"Pelo facial, postizos y prótesis animales",a:"Rasgos animales sutiles en cejas, orejas y uñas",e:"La bestia aparece del todo en el rostro, las manos y el cuerpo",roles:["La viuda","El cazador","El niño salvaje"]},
+ {id:"kessler",n:"Kessler",c:"#b8733a",col:"Cobre",q:"Seres fabricados: muñecos y cuerpos ensamblados",r:"Piel de porcelana agrietada, costuras y cicatrices, articulaciones visibles, piezas de cuerpos distintos",t:"Cicatrices, costuras y efecto porcelana",a:"Aspecto humano con maquillaje de porcelana perfecto",e:"Grietas, costuras abiertas y piezas que se sueltan",roles:["El relojero, creador de la familia","La muñeca de porcelana","La creación cosida"]},
+ {id:"ravenscroft",n:"Ravenscroft",c:"#7a5a92",col:"Morado oscuro",q:"Brujas que redactaron el Acuerdo de 1826",r:"Envejecimiento extremo, manchas en la piel, uñas largas, cabello canoso, ojos velados",t:"Envejecimiento",a:"Jóvenes y bellas gracias a un hechizo",e:"El hechizo se rompe: aparece su edad real de siglos, con la piel cuarteada y el cabello blanco",roles:["La gran bruja","La aprendiz","La adivina"]}
+];
+FAM.forEach(f=>f.roles=f.roles.map((name,i)=>({id:f.id+"-"+(i+1),name})));
+const HIST=["Nadie lo sabe, pero en Europa viven seis familias que no son del todo humanas. Tienen apellidos antiguos, fortunas enormes y secretos que llevan siglos escondiendo bajo guantes, maquillaje y cuellos altos.",
+"En 1826, tras una guerra entre ellas que casi las destruye, las seis familias firmaron el Acuerdo. Lo redactaron las brujas Ravenscroft y tiene tres normas: no atacarse entre ellas, no dejarse ver por los humanos y renovar el pacto cada cien años, en una noche de eclipse total.",
+"Ha llegado ese momento. Es la noche del 14 de enero de 1926 y la cita es en la mansión Blackwood, una casa enorme y decadente en mitad del páramo. La anfitriona es Severina Blackwood, la única humana que conoce el secreto de las familias y guardiana del documento original del Acuerdo.",
+"Los invitados llegan uno a uno. Todos se esfuerzan por parecer personas normales: van de etiqueta, disimulan sus rasgos con maquillaje y se comportan con la máxima educación. Pero las familias se odian, y cada una tiene una cuenta pendiente con alguna otra o con la propia Severina.",
+"A medianoche, la luna desaparece por completo. Con el eclipse ningún disfraz se sostiene: cada invitado muestra su forma verdadera. A unos les brotan escamas, a otros se les agrieta la piel, a otros se les cae el hechizo que los mantenía jóvenes. En ese momento se apagan todas las velas.",
+"Cuando vuelve la luz, Severina Blackwood está muerta al pie de la escalera. El Acuerdo ha desaparecido y en su mejilla hay una marca que nadie sabe interpretar. Las puertas de la mansión se han cerrado solas y no se abrirán hasta el amanecer.",
+"Todos los invitados tenían un motivo. Todos estaban en el salón."];
+const EST=[["Época","1926. Etiqueta de gala de los años veinte mezclada con piezas heredadas de siglos anteriores."],
+["Ambiente","Gótico y decadente: luz de velas, terciopelo, encaje, oro viejo y joyería antigua."],
+["Belleza monstruosa","Cada personaje es elegante y perturbador a la vez."],
+["Diseño de cuerpo completo","Rostro, cuerpo, manos, cabello y vestuario forman un solo diseño. La caracterización es lo principal; el vestuario acompaña y reacciona a la transformación."],
+["Paleta base","PALETTE"],
+["Silueta reconocible","A cada personaje se le debe poder identificar solo por su sombra."],
+["Estilo 2D","Realista o anime, a tu elección. Si eliges anime, añade una vista de cómo se trasladaría el diseño a una persona real."]];
+const DEF=["<b>Identidad:</b> nombre, familia, rol, edad aparente y papel en su familia.","<b>Personalidad:</b> tres rasgos de carácter.","<b>Motivo:</b> por qué podría haber matado a Severina, en una frase.","<b>Cómo llega a la gala:</b> rostro, cuerpo, cabello y vestuario.","<b>Cómo queda tras el eclipse:</b> qué cambia en cada zona y qué le pasa al vestuario.","<b>Rasgos de su familia:</b> qué elementos lleva y cómo usa el color propio.","<b>Intérprete tipo:</b> edad real, complexión y rasgos de la persona sobre la que se caracterizaría.","<b>Técnicas principales:</b> maquillaje, prótesis o FX, peluquería y vestuario.","<b>Estilo 2D:</b> realista o anime."];
+
+const $=s=>document.querySelector(s);
+const el=(t,a={},kids=[])=>{const e=document.createElement(t);for(const[k,v]of Object.entries(a)){if(v==null)continue;if(k==="text")e.textContent=v;else if(k==="html")e.innerHTML=v;else if(k==="style")e.style.cssText=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v)}for(const c of[].concat(kids))if(c)e.append(c);return e};
+
+/* static content */
+HIST.forEach((p,i)=>$("#historia").append(el("p",{class:i===0?"drop":"",text:p})));
+$("#historia").append(el("p",{class:"end",text:"Uno de ellos es tu personaje."}));
+EST.forEach(([k,v])=>{
+  const body=v==="PALETTE"?el("div",{},[el("p",{text:"Base común, y cada familia añade su color propio."}),el("div",{class:"swatches",style:"margin-top:6px"},[["Negro","#0e0b0f"],["Granate","#6e1f2a"],["Oro","#b8913f"],["Marfil","#efe6d3"]].map(([n,c])=>el("span",{class:"sw"},[el("i",{style:"background:"+c}),n])))]):el("p",{text:v});
+  $("#estetica").append(el("div",{class:"it"},[el("h3",{text:k}),body]));
+});
+DEF.forEach(d=>$("#definir").append(el("li",{},[el("span",{html:d})])));
+
+/* tabs */
+const tabs=[...document.querySelectorAll('[role=tab]')];
+function show(name){tabs.forEach(t=>{const on=t.id==="t-"+name;t.setAttribute("aria-selected",on);$("#"+t.getAttribute("aria-controls")).hidden=!on});
+  try{localStorage.setItem("bw-tab",name)}catch(e){}}
+tabs.forEach(t=>t.addEventListener("click",()=>show(t.id.slice(2))));
+document.querySelectorAll("[data-go]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();show(a.dataset.go)}));
+(()=>{let h=(location.hash||"").slice(1);let s=null;try{s=localStorage.getItem("bw-tab")}catch(e){}
+  const n=["historia","familias","reparto","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
+
+/* state */
+const S={remote:false,pin:"",local:false,claims:{},db:null,user:null,uid:null,canAdmin:false,ready:false,openFam:null,claiming:null,err:"",offline:false};
+const famOf=id=>FAM.find(f=>f.id===id);
+const roleName=(c)=>{if(c.custom)return c.roleName||"Rol propio";const f=famOf(c.fam);const r=f&&f.roles.find(r=>r.id===c.role);return r?r.name:c.role};
+const claimsByFam=fid=>Object.values(S.claims).filter(c=>c.fam===fid);
+const myClaim=()=>null;
+
+function renderFams(){
+  const box=$("#fams");box.replaceChildren();
+  FAM.forEach(f=>{
+    const n=claimsByFam(f.id).length;
+    box.append(el("button",{class:"fam",style:"--fc:"+f.c,onclick:()=>{S.openFam=f.id;S.claiming=null;S.err="";renderDetail()}},[
+      el("div",{class:"top"},[el("h3",{text:f.n}),el("span",{class:"count "+(n>=2?"ok":"low"),text:n===1?"1 reservado":n+" reservados"})]),
+      el("p",{class:"what",text:f.q}),
+      el("p",{class:"tech",text:"Técnica: "+f.t})
+    ]));
+  });
+}
+
+function renderDetail(){
+  const d=$("#fam-detail"),list=$("#fam-list");
+  if(!S.openFam){d.hidden=true;list.hidden=false;return}
+  const f=famOf(S.openFam);list.hidden=true;d.hidden=false;d.replaceChildren();
+  const mine=myClaim();
+  const card=el("div",{class:"detail",style:"--fc:"+f.c},[
+    el("div",{class:"head"},[
+      el("div",{},[el("span",{class:"label",text:"Familia"}),el("h2",{text:f.n})]),
+      el("button",{class:"back",text:"← Todas las familias",onclick:()=>{S.openFam=null;renderDetail()}})
+    ]),
+    el("p",{style:"font-style:italic",text:f.q}),
+    el("div",{class:"grid2"},[
+      el("div",{class:"box"},[el("span",{class:"label",text:"Rasgos de caracterización"}),el("p",{text:f.r})]),
+      el("div",{class:"box"},[el("span",{class:"label",text:"Técnica principal"}),el("p",{text:f.t}),el("span",{class:"label",text:"Color propio",style:"margin-top:6px"}),el("span",{class:"sw"},[el("i",{style:"background:"+f.c}),f.col])])
+    ]),
+    el("div",{},[el("span",{class:"label",text:"La transformación"}),
+      el("div",{class:"before-after",style:"margin-top:8px"},[
+        el("div",{},[el("span",{class:"label",text:"Cómo llegan a la gala"}),el("p",{text:f.a})]),
+        el("div",{},[el("span",{class:"label",text:"Tras el eclipse"}),el("p",{text:f.e})])
+      ])])
+  ]);
+  const roles=el("div",{class:"roles"});
+  const writable=S.ready&&(S.remote||S.local||(S.db&&!S.offline));
+  f.roles.forEach(r=>{
+    const c=S.claims[r.id];
+    roles.append(roleRow(f,r.id,r.name,c,writable,mine));
+  });
+  claimsByFam(f.id).filter(c=>c.custom).forEach(c=>roles.append(roleRow(f,c.id,c.roleName||"Rol propio",c,writable,mine)));
+  const head=el("div",{style:"display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline"},[
+    el("span",{class:"label",text:"Roles"}),
+    writable?el("button",{class:"btn ghost",text:"Añadir un rol propio",onclick:()=>{S.claiming={fam:f.id,custom:true};S.err="";renderDetail()}}):null]);
+  card.append(el("div",{style:"display:grid;gap:10px"},[head,roles]));
+  if(S.claiming&&S.claiming.fam===f.id)card.append(claimForm(f));
+  if(!S.ready)card.append(el("p",{class:"note",text:"Cargando el reparto…"}));
+  else if(S.local)card.append(el("p",{class:"note",text:"Modo local: las reservas se guardan solo en este navegador."}));
+  else if(mine)card.append(el("p",{class:"note",text:"Ya tienes reservado: "+roleName(mine)+" ("+famOf(mine.fam).n+"). Libéralo si quieres cambiar."}));
+  d.append(card);
+}
+
+function roleRow(f,rid,name,c,writable,mine){
+  const isMine=false;
+  let right;
+  if(c){
+    right=writable&&(!S.remote||S.pin)?el("button",{class:"btn ghost",text:"Liberar",onclick:()=>release(rid)}):el("span",{class:"tag",text:"Reservado"});
+  }else{
+    right=writable?el("button",{class:"btn",text:"Reservar",onclick:()=>{S.claiming={fam:f.id,role:rid,custom:false};S.err="";renderDetail()}}):el("span",{class:"tag free",text:"Libre"});
+    if(mine&&right.tagName==="BUTTON")right.disabled=true;
+  }
+  const who=c?el("p",{class:"who"},[el("span",{text:"Reservado por "}),el("b",{text:c.alumna||"—"}),c.personaje?el("span",{text:" · "+c.personaje}):null,c.estilo?el("span",{text:" · "+c.estilo}):null]):el("p",{class:"who",text:"Libre"});
+  return el("div",{class:"role"+(c?" taken":"")+(isMine?" mine":"")},[el("div",{},[el("b",{text:name}),who]),right]);
+}
+
+function claimForm(f){
+  const cl=S.claiming;
+  const form=el("form",{class:"claim"});
+  const roleLbl=cl.custom?"Proponer un rol propio en "+f.n:"Reservar: "+f.roles.find(r=>r.id===cl.role).name;
+  form.append(el("b",{text:roleLbl}));
+  if(cl.custom)form.append(el("div",{class:"row"},[el("label",{for:"f-rol",class:"label",text:"Nombre del rol"}),el("input",{id:"f-rol",required:"",maxlength:"60",placeholder:"Ej.: La prima olvidada"})]));
+  form.append(el("div",{class:"row"},[el("label",{for:"f-alumna",class:"label",text:"Nombre de la alumna"}),el("input",{id:"f-alumna",required:"",maxlength:"60",autocomplete:"name"})]));
+  form.append(el("div",{class:"row"},[el("label",{for:"f-pj",class:"label",text:"Nombre del personaje (opcional)"}),el("input",{id:"f-pj",maxlength:"60",placeholder:"Ej.: Ilona Várkonyi"})]));
+  const sel=el("select",{id:"f-estilo"},[el("option",{value:"Realista",text:"Realista"}),el("option",{value:"Anime",text:"Anime"})]);
+  form.append(el("div",{class:"row"},[el("label",{for:"f-estilo",class:"label",text:"Estilo 2D"}),sel]));
+  if(S.err)form.append(el("p",{class:"err",text:S.err}));
+  const go=el("button",{class:"btn",type:"submit",text:"Confirmar reserva"});
+  form.append(el("div",{class:"acts"},[go,el("button",{class:"btn ghost",type:"button",text:"Cancelar",onclick:()=>{S.claiming=null;S.err="";renderDetail()}})]));
+  form.addEventListener("submit",async e=>{e.preventDefault();go.disabled=true;go.textContent="Reservando…";
+    await claim({fam:f.id,role:cl.role,custom:cl.custom,roleName:cl.custom?$("#f-rol").value.trim():"",alumna:$("#f-alumna").value.trim(),personaje:$("#f-pj").value.trim(),estilo:sel.value});
+  });
+  setTimeout(()=>{const i=form.querySelector("input");if(i)i.focus()},0);
+  return form;
+}
+
+async function claim(d){
+  if(!d.alumna){S.err="Escribe el nombre de la alumna.";renderDetail();return}
+  const id=d.custom?"propio-"+d.fam+"-"+Date.now().toString(36):d.role;
+  const body={fam:d.fam,role:id,custom:!!d.custom,roleName:d.roleName||"",alumna:d.alumna,personaje:d.personaje||"",estilo:d.estilo,uid:S.uid||null,at:Date.now()};
+  if(S.remote){
+    try{
+      const r=await api({action:"reserve",id,...body});
+      if(!r.ok){S.err=r.error==="ocupado"?"Este rol acaba de reservarse. Elige otro.":"No se pudo guardar la reserva.";await refresh();renderDetail();return}
+      S.claiming=null;S.err="";await refresh();
+    }catch(e){S.err="No hay conexión con el reparto. Inténtalo de nuevo.";renderDetail()}
+    return;
+  }
+  if(S.local){
+    if(S.claims[id]){S.err="Este rol ya está reservado. Elige otro.";renderDetail();return}
+    S.claims[id]={id,...body};saveLocal();S.claiming=null;S.err="";renderAll();return;
+  }
+  try{
+    const ref=S.db.collection("reparto").doc(id);
+    const snap=await ref.get();
+    if(snap.exists&&snap.data()&&snap.data().alumna){S.err="Este rol acaba de reservarse. Elige otro.";renderDetail();return}
+    await ref.set(body);
+    S.claiming=null;S.err="";renderAll();
+  }catch(e){
+    S.err=e&&e.code==="invalid_argument"?"Esta cuenta no tiene permiso para guardar en el reparto compartido.":"No se pudo guardar la reserva ("+((e&&e.code)||"error")+"). Inténtalo de nuevo.";
+    renderDetail();
+  }
+}
+async function release(rid){
+  if(S.remote){
+    try{const r=await api({action:"release",id:rid,pin:S.pin});if(!r.ok)S.err=r.error==="pin"?"Código de docente incorrecto.":"No se pudo liberar el rol.";}catch(e){S.err="No hay conexión con el reparto.";}
+    await refresh();renderDetail();return;
+  }
+  if(S.local){delete S.claims[rid];saveLocal();renderAll();return}
+  try{await S.db.collection("reparto").doc(rid).delete()}catch(e){S.err="No se pudo liberar el rol.";}
+  renderAll();
+}
+
+function renderLedger(){
+  const st=$("#status");st.replaceChildren();
+  FAM.forEach(f=>{const n=claimsByFam(f.id).length;st.append(el("div",{class:"s",style:"--fc:"+f.c},[el("b",{text:f.n}),el("span",{class:"count "+(n>=2?"ok":"low"),style:"justify-self:start",text:n>=2?n+" reservados":(n+" reservados · faltan "+(2-n))})]))});
+  const tb=$("#ledger");tb.replaceChildren();
+  let any=false;
+  FAM.forEach(f=>{
+    const rows=[...f.roles.map(r=>({rid:r.id,name:r.name,c:S.claims[r.id]})),...claimsByFam(f.id).filter(c=>c.custom).map(c=>({rid:c.id,name:c.roleName||"Rol propio",c}))];
+    rows.forEach(({name,c})=>{if(c)any=true;
+      tb.append(el("tr",{style:"--fc:"+f.c},[el("td",{},[el("span",{class:"dot"}),f.n]),el("td",{text:name}),
+        el("td",{class:c?"":"empty",text:c?c.alumna:"Libre"}),el("td",{text:c?c.personaje||"—":""}),el("td",{text:c?c.estilo||"":""})]))});
+  });
+  const total=Object.keys(S.claims).length;
+  const sync=$("#sync");
+  if(!S.ready)sync.textContent="Conectando con el reparto…";
+  else if(S.remote)sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza cada 15 segundos.";
+  else if(S.local)sync.textContent=total+" de 17 alumnas con rol reservado · modo local: se guarda solo en este navegador. Para compartirlo en directo, abre la web desde claude.ai con tu cuenta.";
+  else sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza en directo.";
+}
+function renderAll(){renderFams();renderDetail();renderLedger()}
+renderAll();
+
+/* local fallback */
+function loadLocal(){try{const v=JSON.parse(localStorage.getItem("bw-reparto")||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}}
+function saveLocal(){try{localStorage.setItem("bw-reparto",JSON.stringify(S.claims))}catch(e){S.err="Este navegador no permite guardar datos.";}}
+function goLocal(){S.local=true;S.offline=false;S.claims=loadLocal();S.ready=true;renderAll()}
+/* Google Sheets backend */
+async function api(payload){
+  const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload)});
+  return r.json();
+}
+async function refresh(){
+  try{
+    const r=await (await fetch(SHEET_URL+"?t="+Date.now())).json();
+    const m={};(r.claims||[]).forEach(c=>{if(c&&c.id&&c.alumna)m[c.id]={...c,custom:c.custom===true||c.custom==="TRUE"||c.custom==="true"}});
+    S.claims=m;S.ready=true;S.offline=false;
+  }catch(e){S.ready=true;S.offline=true}
+  renderAll();
+}
+function teacherBox(){
+  const box=document.getElementById("teacher");if(!box)return;
+  box.hidden=!S.remote;
+  const inp=document.getElementById("pin");const st=document.getElementById("pin-st");
+  try{S.pin=sessionStorage.getItem("bw-pin")||""}catch(e){}
+  inp.value=S.pin||"";st.textContent=S.pin?"Modo docente activo: puedes liberar roles.":"";
+  document.getElementById("pin-form").addEventListener("submit",e=>{e.preventDefault();S.pin=inp.value.trim();
+    try{sessionStorage.setItem("bw-pin",S.pin)}catch(e){}
+    st.textContent=S.pin?"Modo docente activo: puedes liberar roles.":"";renderAll()});
+}
+/* live data */
+(async()=>{
+  if(SHEET_URL){S.remote=true;teacherBox();await refresh();setInterval(()=>{if(!document.hidden&&!S.claiming)refresh()},15000);return}
+  try{
+    const [db,user]=await Promise.all([window.claude?.use?.("db")??null,window.claude?.use?.("user")??null]);
+    S.db=db;S.user=user;
+    if(user){S.uid=await user.id();S.canAdmin=await user.canEdit();}
+    if(db){
+      db.collection("reparto").onSnapshot(snap=>{
+        const m={};snap.docs.forEach(d=>{const v=d.data();if(v&&v.alumna)m[d.id]={id:d.id,...v}});
+        S.claims=m;S.ready=true;renderAll();
+      },()=>goLocal());
+    }else goLocal();
+  }catch(e){goLocal()}
+})();
+</script>
+
+</body>
+</html>
