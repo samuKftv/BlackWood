@@ -46,6 +46,13 @@ Las alumnas no necesitan ninguna cuenta: abren el enlace, leen el briefing y res
 - **Solo tú puedes liberar roles.** En la pestaña Reparto escribe tu código de docente y pulsa **Activar**; aparecerán los botones «Liberar».
 - Puedes ver y editar todas las reservas directamente en la hoja de Google Sheets.
 
+## Historias de los personajes
+
+En la pestaña **Tu personaje** cada alumna rellena la historia de su personaje y pulsa **Enviar al profesor**.
+Cada envío se añade como una fila nueva en la pestaña **Historias** de la hoja de Google (se crea sola con el primer envío).
+Si una alumna envía varias veces, la última fila suya es la versión más reciente.
+Mientras escribe, su borrador se guarda en su navegador; también puede descargarlo en Word.
+
 ## Si algo falla
 
 - **«No hay conexión con el reparto»**: revisa que la URL termina en `/exec` y que la implementación tiene acceso para «Cualquier usuario».

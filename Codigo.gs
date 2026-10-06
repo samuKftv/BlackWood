@@ -6,6 +6,27 @@
 const PIN_DOCENTE = 'cambia-este-codigo';
 const HOJA = 'Reparto';
 const COLUMNAS = ['id', 'fam', 'role', 'custom', 'roleName', 'alumna', 'personaje', 'estilo', 'at'];
+const HOJA_HISTORIAS = 'Historias';
+const CAMPOS_HISTORIA = [
+  ['nombre', 'Nombre del personaje'], ['edad_ap', 'Edad aparente'], ['edad_real', 'Edad real'], ['papel', 'Papel en su familia'],
+  ['nacimiento', 'Nacimiento e infancia'], ['marca', 'Qué le marcó'], ['familia_rel', 'Relación con su familia'], ['acuerdo', 'Opinión sobre el Acuerdo'],
+  ['rasgos', 'Rasgos de carácter'], ['desea', 'Qué quiere y qué teme'], ['gesto', 'Gesto o manía'],
+  ['porque_gala', 'Por qué vino a la gala'], ['severina', 'Relación con Severina'], ['donde', 'Dónde estaba'], ['culpable', 'Por qué podría ser culpable'],
+  ['ll_rostro', 'Llegada: rostro'], ['ll_cuerpo', 'Llegada: cuerpo y manos'], ['ll_cabello', 'Llegada: cabello'], ['ll_vestuario', 'Llegada: vestuario'],
+  ['ec_rostro', 'Eclipse: rostro'], ['ec_cuerpo', 'Eclipse: cuerpo y manos'], ['ec_cabello', 'Eclipse: cabello'], ['ec_vestuario', 'Eclipse: vestuario'],
+  ['just1', 'Rasgo justificado 1'], ['just2', 'Rasgo justificado 2'], ['just3', 'Rasgo justificado 3']
+];
+
+function hojaHistorias_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(HOJA_HISTORIAS);
+  if (!sh) {
+    sh = ss.insertSheet(HOJA_HISTORIAS);
+    sh.appendRow(['Fecha de envío', 'Rol (id)', 'Familia', 'Rol', 'Alumna'].concat(CAMPOS_HISTORIA.map(c => c[1])));
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
 
 function hoja_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -57,6 +78,16 @@ function doPost(e) {
         limpia_(d.roleName, 60), limpia_(d.alumna, 60), limpia_(d.personaje, 60),
         limpia_(d.estilo, 20), new Date()
       ]);
+      return salida_({ ok: true });
+    }
+
+    if (d.action === 'historia') {
+      if (!d.roleId || !d.alumna) return salida_({ ok: false, error: 'datos' });
+      const datos = d.data || {};
+      hojaHistorias_().appendRow(
+        [new Date(), limpia_(d.roleId, 60), limpia_(d.familia, 30), limpia_(d.rol, 60), limpia_(d.alumna, 60)]
+          .concat(CAMPOS_HISTORIA.map(c => limpia_(datos[c[0]], 3000)))
+      );
       return salida_({ ok: true });
     }
 

@@ -127,6 +127,21 @@ tr:last-child td{border-bottom:0}
 .deliver .box h3{font-size:18px}
 .banner{border:1px solid var(--line);background:var(--surface);padding:10px 14px;border-radius:4px;font-size:14.5px;color:var(--muted)}
 @media (prefers-reduced-motion:no-preference){.detail,.claim{animation:in .25s ease-out}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
+
+/* story form */
+.story{border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:4px;background:var(--surface);padding:20px;display:grid;gap:20px}
+.story fieldset{border:0;margin:0;padding:0;display:grid;gap:12px;min-width:0}
+.story legend{font-family:var(--f-display);font-size:21px;color:var(--gold);padding:0;margin-bottom:6px}
+.story .f{display:grid;gap:4px;min-width:0}
+.story .f label{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.story .f small{color:var(--muted);font-size:13.5px;font-style:italic}
+.story input,.story select,.story textarea{font:inherit;font-size:16px;line-height:1.5;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:100%}
+.story textarea{min-height:84px;resize:vertical}
+.story .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.story .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px}
+.story .acts{display:flex;gap:8px;flex-wrap:wrap}
+.prog{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.msg-ok{color:var(--ok);font-size:14.5px}.msg-bad{color:var(--bad);font-size:14.5px}
 </style>
 
 </head>
@@ -237,6 +252,9 @@ tr:last-child td{border-bottom:0}
         </div>
       </div>
     </div>
+    <h2 style="font-size:26px" id="escribir">Escribe aquí la historia de tu personaje</h2>
+    <p class="note">Lo que escribes se guarda solo en este navegador mientras trabajas. Cuando termines, pulsa <b>Enviar al profesor</b>. Puedes volver a enviarla si haces cambios: el profesor verá la última versión.</p>
+    <form class="story" id="story" autocomplete="off"></form>
     <h2 style="font-size:26px">El entregable de la UT1</h2>
     <p class="note">Documento de planificación del proyecto, en la plantilla Excel. Nombre del archivo: <span style="font-family:var(--f-mono)">Apellido_Nombre_UT1_planificacion_v01</span>.</p>
     <div class="deliver">
@@ -441,9 +459,93 @@ function renderLedger(){
   else if(S.local)sync.textContent=total+" de 17 alumnas con rol reservado · modo local: se guarda solo en este navegador. Para compartirlo en directo, abre la web desde claude.ai con tu cuenta.";
   else sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza en directo.";
 }
-function renderAll(){renderFams();renderDetail();renderLedger()}
+function renderAll(){renderFams();renderDetail();renderLedger();if(window.__storyReady){buildStory();roleOptions()}}
 renderAll();
 
+
+/* ===== Historia del personaje ===== */
+const HF=[
+ {t:"Tu rol",k:"meta"},
+ {t:"1. Quién es",f:[["nombre","Nombre y apellido del personaje","i",""],["edad_ap","Edad aparente","i","Ej.: aparenta 60 años"],["edad_real","Edad real","i","Ej.: tiene 300 años"],["papel","Papel en su familia","t","Qué lugar ocupa: quién manda, quién obedece, quién sobra."]]},
+ {t:"2. Su pasado",f:[["nacimiento","Nacimiento e infancia","t","Dónde y cuándo nació, cómo fue su infancia."],["marca","Qué le marcó","t","Una pérdida, una traición, una herida, un secreto."],["familia_rel","Relación con su familia","t",""],["acuerdo","Qué opina del Acuerdo de 1826","t",""]]},
+ {t:"3. Su personalidad",f:[["rasgos","Tres rasgos de carácter","i","Ej.: orgullosa, fría, obsesionada con el linaje"],["desea","Qué quiere conseguir y qué teme perder","t",""],["gesto","Un gesto, manía o costumbre","t","Cómo se mueve, cómo mira, qué toca."]]},
+ {t:"4. La noche del 14 de enero de 1926",f:[["porque_gala","Por qué ha venido a la gala","t",""],["severina","Su relación con Severina Blackwood","t",""],["donde","Dónde estaba cuando se apagaron las velas","t",""],["culpable","Por qué podría ser el culpable y qué esconde","t",""]]},
+ {t:"5. Su aspecto",f:[["ll_rostro","Llegada: rostro","t",""],["ll_cuerpo","Llegada: cuerpo y manos","t",""],["ll_cabello","Llegada: cabello","t",""],["ll_vestuario","Llegada: vestuario","t",""],["ec_rostro","Tras el eclipse: rostro","t",""],["ec_cuerpo","Tras el eclipse: cuerpo y manos","t",""],["ec_cabello","Tras el eclipse: cabello","t",""],["ec_vestuario","Tras el eclipse: qué le pasa a la ropa","t",""],["just1","Rasgo justificado 1","t","Rasgo + por qué lo tiene. Ej.: «Una cicatriz en la ceja porque su hermano la atacó en la guerra de 1825»."],["just2","Rasgo justificado 2","t",""],["just3","Rasgo justificado 3","t",""]]}
+];
+const HKEYS=HF.filter(s=>s.f).flatMap(s=>s.f.map(x=>x[0]));
+const ST={v:{},role:"",alumna:"",msg:"",ok:false,sending:false,built:false};
+function loadStory(){try{const o=JSON.parse(localStorage.getItem("bw-historia")||"{}");ST.v=o.v||{};ST.role=o.role||"";ST.alumna=o.alumna||""}catch(e){}}
+let saveT=null;
+function saveStory(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem("bw-historia",JSON.stringify({v:ST.v,role:ST.role,alumna:ST.alumna}))}catch(e){}},400)}
+function roleOptions(){
+  const sel=document.getElementById("h-role");if(!sel)return;
+  const cur=ST.role;sel.replaceChildren(el("option",{value:"",text:"Elige tu rol reservado…"}));
+  FAM.forEach(f=>{const g=el("optgroup",{label:f.n});
+    const rows=[...f.roles.map(r=>({id:r.id,name:r.name,c:S.claims[r.id]})),...claimsByFam(f.id).filter(c=>c.custom).map(c=>({id:c.id,name:c.roleName||"Rol propio",c}))];
+    rows.forEach(r=>g.append(el("option",{value:r.id,text:r.name+(r.c?" · "+r.c.alumna:" · libre")})));sel.append(g)});
+  sel.value=cur;
+}
+function progress(){const n=HKEYS.filter(k=>(ST.v[k]||"").trim()).length;const w=HKEYS.reduce((a,k)=>a+((ST.v[k]||"").trim().split(/\s+/).filter(Boolean).length),0);
+  const p=document.getElementById("h-prog");if(p)p.textContent=n+" de "+HKEYS.length+" apartados · "+w+" palabras";}
+function roleInfo(){const id=ST.role;if(!id)return null;const c=S.claims[id];
+  for(const f of FAM){const r=f.roles.find(r=>r.id===id);if(r)return{fam:f.n,rol:r.name,c};if(c&&c.fam===f.id)return{fam:f.n,rol:c.roleName||"Rol propio",c}}
+  return c?{fam:(famOf(c.fam)||{}).n||"",rol:c.roleName||"",c}:null}
+function buildStory(){
+  const form=document.getElementById("story");if(!form||ST.built)return;ST.built=true;loadStory();
+  HF.forEach(sec=>{
+    const fs=el("fieldset",{},[el("legend",{text:sec.t})]);
+    if(sec.k==="meta"){
+      fs.append(el("div",{class:"cols"},[
+        el("div",{class:"f"},[el("label",{for:"h-role",text:"Rol reservado"}),el("select",{id:"h-role",onchange:e=>{ST.role=e.target.value;const i=roleInfo();if(i&&i.c&&!ST.alumna){ST.alumna=i.c.alumna;document.getElementById("h-alumna").value=ST.alumna}if(i&&i.c&&i.c.personaje&&!ST.v.nombre){ST.v.nombre=i.c.personaje;document.getElementById("h-nombre").value=ST.v.nombre}saveStory()}})]),
+        el("div",{class:"f"},[el("label",{for:"h-alumna",text:"Tu nombre"}),el("input",{id:"h-alumna",maxlength:"60",value:ST.alumna,oninput:e=>{ST.alumna=e.target.value;saveStory()}})])
+      ]));
+    }else{
+      const grid=el("div",{class:sec.f.every(x=>x[2]==="i")?"cols":"",style:sec.f.every(x=>x[2]==="i")?"":"display:grid;gap:12px"});
+      sec.f.forEach(([k,lab,type,hint])=>{
+        const id="h-"+k;const attrs={id,oninput:e=>{ST.v[k]=e.target.value;saveStory();progress()}};
+        const ctl=type==="i"?el("input",{...attrs,maxlength:"200",value:ST.v[k]||""}):el("textarea",{...attrs,maxlength:"3000"});
+        if(type!=="i")ctl.value=ST.v[k]||"";
+        grid.append(el("div",{class:"f"},[el("label",{for:id,text:lab}),hint?el("small",{text:hint}):null,ctl]));
+      });
+      fs.append(grid);
+    }
+    form.append(fs);
+  });
+  const msg=el("p",{id:"h-msg",role:"status"});
+  const send=el("button",{class:"btn",type:"submit",id:"h-send",text:"Enviar al profesor"});
+  const dl=el("button",{class:"btn ghost",type:"button",text:"Descargar en Word",onclick:downloadStory});
+  if(window.claude)dl.hidden=true;
+  form.append(el("div",{class:"bar"},[el("span",{class:"prog",id:"h-prog"}),el("div",{class:"acts"},[dl,send])]),msg);
+  form.addEventListener("submit",e=>{e.preventDefault();sendStory()});
+  roleOptions();progress();
+}
+function setMsg(t,ok){const m=document.getElementById("h-msg");if(m){m.textContent=t;m.className=ok?"msg-ok":"msg-bad"}}
+async function sendStory(){
+  const info=roleInfo();
+  if(!ST.role||!info){setMsg("Elige tu rol reservado antes de enviar.",false);return}
+  if(!ST.alumna.trim()){setMsg("Escribe tu nombre antes de enviar.",false);return}
+  if(!(ST.v.nombre||"").trim()){setMsg("Escribe el nombre de tu personaje antes de enviar.",false);return}
+  const empty=HKEYS.filter(k=>!(ST.v[k]||"").trim()).length;
+  const btn=document.getElementById("h-send");btn.disabled=true;btn.textContent="Enviando…";
+  const payload={roleId:ST.role,familia:info.fam,rol:info.rol,alumna:ST.alumna.trim(),data:Object.fromEntries(HKEYS.map(k=>[k,(ST.v[k]||"").trim()]))};
+  try{
+    if(S.remote){const r=await api({action:"historia",...payload});if(!r.ok)throw new Error(r.error||"error")}
+    else if(S.db&&!S.local){await S.db.collection("historias").doc(ST.role).set({...payload,at:Date.now()})}
+    else{setMsg("Tu historia está guardada en este navegador, pero esta versión de la web no puede enviarla. Descárgala y entrégala al profesor.",false);btn.disabled=false;btn.textContent="Enviar al profesor";return}
+    const t=new Date();setMsg("Enviada al profesor a las "+t.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})+"."+(empty?" Te quedan "+empty+" apartados vacíos: puedes completarlos y volver a enviarla.":""),true);
+  }catch(e){setMsg(e&&e.message==="accion"?"La hoja del profesor necesita actualizar su script para recibir historias.":"No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.",false)}
+  btn.disabled=false;btn.textContent="Enviar al profesor";
+}
+function downloadStory(){
+  const info=roleInfo()||{fam:"",rol:""};const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br>");
+  let h='<html><head><meta charset="utf-8"><title>Historia</title></head><body style="font-family:Georgia,serif">';
+  h+="<h1>"+esc(ST.v.nombre||"Mi personaje")+"</h1><p><b>Familia:</b> "+esc(info.fam)+" · <b>Rol:</b> "+esc(info.rol)+" · <b>Alumna:</b> "+esc(ST.alumna)+"</p>";
+  HF.filter(s=>s.f).forEach(s=>{h+="<h2>"+esc(s.t)+"</h2>";s.f.forEach(([k,lab])=>{h+="<p><b>"+esc(lab)+":</b> "+esc(ST.v[k])+"</p>"})});
+  h+="</body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([h],{type:"application/msword"}));
+  a.download=((ST.alumna||"alumna").trim().replace(/\s+/g,"_")+"_historia_personaje.doc");document.body.append(a);a.click();a.remove();
+}
+window.__storyReady=true;buildStory();
 /* local fallback */
 function loadLocal(){try{const v=JSON.parse(localStorage.getItem("bw-reparto")||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}}
 function saveLocal(){try{localStorage.setItem("bw-reparto",JSON.stringify(S.claims))}catch(e){S.err="Este navegador no permite guardar datos.";}}
