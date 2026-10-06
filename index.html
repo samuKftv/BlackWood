@@ -401,7 +401,7 @@ function claimForm(f){
   if(S.err)form.append(el("p",{class:"err",text:S.err}));
   const go=el("button",{class:"btn",type:"submit",text:"Confirmar reserva"});
   form.append(el("div",{class:"acts"},[go,el("button",{class:"btn ghost",type:"button",text:"Cancelar",onclick:()=>{S.claiming=null;S.err="";renderDetail()}})]));
-  form.addEventListener("submit",async e=>{e.preventDefault();go.disabled=true;go.textContent="Reservando…";
+  form.addEventListener("submit",async e=>{e.preventDefault();go.disabled=true;go.textContent="Reservando… puede tardar hasta 30 segundos";
     await claim({fam:f.id,role:cl.role,custom:cl.custom,roleName:cl.custom?$("#f-rol").value.trim():"",alumna:$("#f-alumna").value.trim(),personaje:$("#f-pj").value.trim()});
   });
   setTimeout(()=>{const i=form.querySelector("input");if(i)i.focus()},0);
@@ -530,7 +530,7 @@ async function sendStory(){
   if(!ST.alumna.trim()){setMsg("Escribe tu nombre antes de enviar.",false);return}
   if(!(ST.v.nombre||"").trim()){setMsg("Escribe el nombre de tu personaje antes de enviar.",false);return}
   const empty=HKEYS.filter(k=>!(ST.v[k]||"").trim()).length;
-  const btn=document.getElementById("h-send");btn.disabled=true;btn.textContent="Enviando…";
+  const btn=document.getElementById("h-send");btn.disabled=true;btn.textContent="Enviando… puede tardar hasta 30 segundos";
   const payload={roleId:ST.role,familia:info.fam,rol:info.rol,alumna:ST.alumna.trim(),data:Object.fromEntries(HKEYS.map(k=>[k,(ST.v[k]||"").trim()]))};
   try{
     if(S.remote){const r=await api({action:"historia",...payload});if(!r.ok)throw new Error(r.error||"error")}
