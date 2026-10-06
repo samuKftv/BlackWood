@@ -171,18 +171,18 @@ tr:last-child td{border-bottom:0}
     <div class="status" id="status"></div>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Familia</th><th>Rol</th><th>Alumna</th><th>Personaje</th><th>Estilo 2D</th></tr></thead>
+        <thead><tr><th>Familia</th><th>Rol</th><th>Alumna</th><th>Personaje</th></tr></thead>
         <tbody id="ledger"></tbody>
       </table>
     </div>
     <div id="teacher" class="banner" hidden>
       <form id="pin-form" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <label for="pin" class="label">Código de docente</label>
+        <label for="pin" class="label">Código del profesor</label>
         <input id="pin" type="password" autocomplete="off" style="font:inherit;font-size:16px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:180px">
         <button class="btn" type="submit">Activar</button>
         <span id="pin-st" class="note"></span>
       </form>
-      <p class="note" style="margin-top:6px">Solo la docente puede liberar roles. Las alumnas solo reservan.</p>
+      <p class="note" style="margin-top:6px">Solo el profesor, Samuel, puede liberar roles. Las alumnas solo reservan.</p>
     </div>
     <p class="note">No se puede repetir rol y cada familia necesita al menos dos personajes. Para reservar, entra en <a href="#familias" data-go="familias" style="color:var(--gold)">Las familias</a> y elige un rol libre.</p>
   </section>
@@ -199,7 +199,7 @@ tr:last-child td{border-bottom:0}
         <p><b>Llegada:</b> piel pálida con escamas de bronce apenas visibles en pómulos y cuello, ojos ámbar, cabello gris en corona trenzada, guantes largos que esconden las garras y vestido negro de cuello alto con bordados en bronce.</p>
         <p><b>Tras el eclipse:</b> las escamas le cubren media cara, el cuello y los brazos; pupilas de reptil; las garras rompen los guantes; una cresta le brota de la espalda y rasga el vestido.</p>
         <p><b>Intérprete tipo:</b> actriz de unos 50 años, alta y delgada, rostro alargado y pómulos marcados.</p>
-        <p><b>Técnicas:</b> maquillaje para palidez y envejecimiento; prótesis para escamas, cresta y garras; lentes de contacto; peluca; vestuario preparado para romperse. <b>Estilo:</b> realista.</p>
+        <p><b>Técnicas:</b> maquillaje para palidez y envejecimiento; prótesis para escamas, cresta y garras; lentes de contacto; peluca; vestuario preparado para romperse.</p>
       </div>
     </div>
     <h2 style="font-size:26px">El entregable de la UT1</h2>
@@ -238,9 +238,8 @@ const EST=[["Época","1926. Etiqueta de gala de los años veinte mezclada con pi
 ["Belleza monstruosa","Cada personaje es elegante y perturbador a la vez."],
 ["Diseño de cuerpo completo","Rostro, cuerpo, manos, cabello y vestuario forman un solo diseño. La caracterización es lo principal; el vestuario acompaña y reacciona a la transformación."],
 ["Paleta base","PALETTE"],
-["Silueta reconocible","A cada personaje se le debe poder identificar solo por su sombra."],
-["Estilo 2D","Realista o anime, a tu elección. Si eliges anime, añade una vista de cómo se trasladaría el diseño a una persona real."]];
-const DEF=["<b>Identidad:</b> nombre, familia, rol, edad aparente y papel en su familia.","<b>Personalidad:</b> tres rasgos de carácter.","<b>Motivo:</b> por qué podría haber matado a Severina, en una frase.","<b>Cómo llega a la gala:</b> rostro, cuerpo, cabello y vestuario.","<b>Cómo queda tras el eclipse:</b> qué cambia en cada zona y qué le pasa al vestuario.","<b>Rasgos de su familia:</b> qué elementos lleva y cómo usa el color propio.","<b>Intérprete tipo:</b> edad real, complexión y rasgos de la persona sobre la que se caracterizaría.","<b>Técnicas principales:</b> maquillaje, prótesis o FX, peluquería y vestuario.","<b>Estilo 2D:</b> realista o anime."];
+["Silueta reconocible","A cada personaje se le debe poder identificar solo por su sombra."] ];
+const DEF=["<b>Identidad:</b> nombre, familia, rol, edad aparente y papel en su familia.","<b>Personalidad:</b> tres rasgos de carácter.","<b>Motivo:</b> por qué podría haber matado a Severina, en una frase.","<b>Cómo llega a la gala:</b> rostro, cuerpo, cabello y vestuario.","<b>Cómo queda tras el eclipse:</b> qué cambia en cada zona y qué le pasa al vestuario.","<b>Rasgos de su familia:</b> qué elementos lleva y cómo usa el color propio.","<b>Intérprete tipo:</b> edad real, complexión y rasgos de la persona sobre la que se caracterizaría.","<b>Técnicas principales:</b> maquillaje, prótesis o FX, peluquería y vestuario."];
 
 const $=s=>document.querySelector(s);
 const el=(t,a={},kids=[])=>{const e=document.createElement(t);for(const[k,v]of Object.entries(a)){if(v==null)continue;if(k==="text")e.textContent=v;else if(k==="html")e.innerHTML=v;else if(k==="style")e.style.cssText=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v)}for(const c of[].concat(kids))if(c)e.append(c);return e};
@@ -330,7 +329,7 @@ function roleRow(f,rid,name,c,writable,mine){
     right=writable?el("button",{class:"btn",text:"Reservar",onclick:()=>{S.claiming={fam:f.id,role:rid,custom:false};S.err="";renderDetail()}}):el("span",{class:"tag free",text:"Libre"});
     if(mine&&right.tagName==="BUTTON")right.disabled=true;
   }
-  const who=c?el("p",{class:"who"},[el("span",{text:"Reservado por "}),el("b",{text:c.alumna||"—"}),c.personaje?el("span",{text:" · "+c.personaje}):null,c.estilo?el("span",{text:" · "+c.estilo}):null]):el("p",{class:"who",text:"Libre"});
+  const who=c?el("p",{class:"who"},[el("span",{text:"Reservado por "}),el("b",{text:c.alumna||"—"}),c.personaje?el("span",{text:" · "+c.personaje}):null]):el("p",{class:"who",text:"Libre"});
   return el("div",{class:"role"+(c?" taken":"")+(isMine?" mine":"")},[el("div",{},[el("b",{text:name}),who]),right]);
 }
 
@@ -342,13 +341,11 @@ function claimForm(f){
   if(cl.custom)form.append(el("div",{class:"row"},[el("label",{for:"f-rol",class:"label",text:"Nombre del rol"}),el("input",{id:"f-rol",required:"",maxlength:"60",placeholder:"Ej.: La prima olvidada"})]));
   form.append(el("div",{class:"row"},[el("label",{for:"f-alumna",class:"label",text:"Nombre de la alumna"}),el("input",{id:"f-alumna",required:"",maxlength:"60",autocomplete:"name"})]));
   form.append(el("div",{class:"row"},[el("label",{for:"f-pj",class:"label",text:"Nombre del personaje (opcional)"}),el("input",{id:"f-pj",maxlength:"60",placeholder:"Ej.: Ilona Várkonyi"})]));
-  const sel=el("select",{id:"f-estilo"},[el("option",{value:"Realista",text:"Realista"}),el("option",{value:"Anime",text:"Anime"})]);
-  form.append(el("div",{class:"row"},[el("label",{for:"f-estilo",class:"label",text:"Estilo 2D"}),sel]));
   if(S.err)form.append(el("p",{class:"err",text:S.err}));
   const go=el("button",{class:"btn",type:"submit",text:"Confirmar reserva"});
   form.append(el("div",{class:"acts"},[go,el("button",{class:"btn ghost",type:"button",text:"Cancelar",onclick:()=>{S.claiming=null;S.err="";renderDetail()}})]));
   form.addEventListener("submit",async e=>{e.preventDefault();go.disabled=true;go.textContent="Reservando…";
-    await claim({fam:f.id,role:cl.role,custom:cl.custom,roleName:cl.custom?$("#f-rol").value.trim():"",alumna:$("#f-alumna").value.trim(),personaje:$("#f-pj").value.trim(),estilo:sel.value});
+    await claim({fam:f.id,role:cl.role,custom:cl.custom,roleName:cl.custom?$("#f-rol").value.trim():"",alumna:$("#f-alumna").value.trim(),personaje:$("#f-pj").value.trim()});
   });
   setTimeout(()=>{const i=form.querySelector("input");if(i)i.focus()},0);
   return form;
@@ -357,7 +354,7 @@ function claimForm(f){
 async function claim(d){
   if(!d.alumna){S.err="Escribe el nombre de la alumna.";renderDetail();return}
   const id=d.custom?"propio-"+d.fam+"-"+Date.now().toString(36):d.role;
-  const body={fam:d.fam,role:id,custom:!!d.custom,roleName:d.roleName||"",alumna:d.alumna,personaje:d.personaje||"",estilo:d.estilo,uid:S.uid||null,at:Date.now()};
+  const body={fam:d.fam,role:id,custom:!!d.custom,roleName:d.roleName||"",alumna:d.alumna,personaje:d.personaje||"",uid:S.uid||null,at:Date.now()};
   if(S.remote){
     try{
       const r=await api({action:"reserve",id,...body});
@@ -383,7 +380,7 @@ async function claim(d){
 }
 async function release(rid){
   if(S.remote){
-    try{const r=await api({action:"release",id:rid,pin:S.pin});if(!r.ok)S.err=r.error==="pin"?"Código de docente incorrecto.":"No se pudo liberar el rol.";}catch(e){S.err="No hay conexión con el reparto.";}
+    try{const r=await api({action:"release",id:rid,pin:S.pin});if(!r.ok)S.err=r.error==="pin"?"Código del profesor incorrecto.":"No se pudo liberar el rol.";}catch(e){S.err="No hay conexión con el reparto.";}
     await refresh();renderDetail();return;
   }
   if(S.local){delete S.claims[rid];saveLocal();renderAll();return}
@@ -400,7 +397,7 @@ function renderLedger(){
     const rows=[...f.roles.map(r=>({rid:r.id,name:r.name,c:S.claims[r.id]})),...claimsByFam(f.id).filter(c=>c.custom).map(c=>({rid:c.id,name:c.roleName||"Rol propio",c}))];
     rows.forEach(({name,c})=>{if(c)any=true;
       tb.append(el("tr",{style:"--fc:"+f.c},[el("td",{},[el("span",{class:"dot"}),f.n]),el("td",{text:name}),
-        el("td",{class:c?"":"empty",text:c?c.alumna:"Libre"}),el("td",{text:c?c.personaje||"—":""}),el("td",{text:c?c.estilo||"":""})]))});
+        el("td",{class:c?"":"empty",text:c?c.alumna:"Libre"}),el("td",{text:c?c.personaje||"—":""})]))});
   });
   const total=Object.keys(S.claims).length;
   const sync=$("#sync");
@@ -434,10 +431,10 @@ function teacherBox(){
   box.hidden=!S.remote;
   const inp=document.getElementById("pin");const st=document.getElementById("pin-st");
   try{S.pin=sessionStorage.getItem("bw-pin")||""}catch(e){}
-  inp.value=S.pin||"";st.textContent=S.pin?"Modo docente activo: puedes liberar roles.":"";
+  inp.value=S.pin||"";st.textContent=S.pin?"Modo profesor activo: puedes liberar roles.":"";
   document.getElementById("pin-form").addEventListener("submit",e=>{e.preventDefault();S.pin=inp.value.trim();
     try{sessionStorage.setItem("bw-pin",S.pin)}catch(e){}
-    st.textContent=S.pin?"Modo docente activo: puedes liberar roles.":"";renderAll()});
+    st.textContent=S.pin?"Modo profesor activo: puedes liberar roles.":"";renderAll()});
 }
 /* live data */
 (async()=>{
