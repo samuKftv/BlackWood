@@ -142,61 +142,10 @@ tr:last-child td{border-bottom:0}
 .story .acts{display:flex;gap:8px;flex-wrap:wrap}
 .prog{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
 .msg-ok{color:var(--ok);font-size:14.5px}.msg-bad{color:var(--bad);font-size:14.5px}
-
-/* gate */
-body.locked .wrap{display:none}
-#gate{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:var(--bg);z-index:50}
-#gate form{max-width:420px;width:100%;display:grid;gap:14px;text-align:center;border:1px solid var(--line);border-top:3px solid var(--gold);background:var(--surface);padding:28px 22px;border-radius:4px}
-#gate h1{font-size:clamp(30px,7vw,44px);color:var(--gold)}
-#gate input{font:inherit;font-size:18px;text-align:center;letter-spacing:.08em;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:10px}
-/* galería */
-.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.gcard{all:unset;cursor:pointer;display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.gcard:hover{border-color:var(--gold)}
-.gcard:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.gthumb{aspect-ratio:4/5;width:100%;object-fit:cover;display:block;background:var(--raise)}
-.gph{aspect-ratio:4/5;display:grid;place-items:center;background:linear-gradient(160deg,var(--fc),var(--raise));font-family:var(--f-display);font-size:44px;color:var(--fg);opacity:.9}
-.gbody{padding:10px 12px;display:grid;gap:2px;border-top:4px solid var(--fc)}
-.gbody b{font-family:var(--f-display);font-weight:400;font-size:18px;line-height:1.2}
-.gbody span{font-size:13.5px;color:var(--muted)}
-.prog-ut{display:flex;gap:4px;margin-top:6px}
-.prog-ut i{flex:1;height:4px;border-radius:2px;background:var(--line)}
-.prog-ut i.on{background:var(--gold)}
-/* ficha */
-.ficha{display:grid;gap:22px}
-.ficha .top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:end;border-bottom:4px solid var(--fc);padding-bottom:14px}
-.ficha h2{font-size:clamp(28px,5vw,42px)}
-.utsec{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:16px}
-.utsec h3{font-size:20px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.utsec h3 .label{font-size:11px}
-.pend{color:var(--muted);font-style:italic;font-size:15px}
-.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.imgs figure{margin:0;display:grid;gap:6px;min-width:0}
-.imgs img{width:100%;border-radius:4px;border:1px solid var(--line);background:var(--raise);display:block}
-.imgs figcaption{font-size:14px;color:var(--muted)}
-.imgs .wide{grid-column:1/-1}
-.pal{display:flex;flex-wrap:wrap;gap:8px}
-.pal div{width:86px;display:grid;gap:4px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
-.pal div i{display:block;height:64px;border-radius:4px;border:1px solid var(--line)}
-.hist{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 22px}
-.hist div{display:grid;gap:2px;min-width:0}
-.hist p{font-size:15.5px;white-space:pre-wrap}
-.ent-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 </style>
 
 </head>
 <body>
-<div id="gate" hidden>
-  <form id="gate-form">
-    <span class="label">Las Indias Films · Acceso del departamento</span>
-    <h1 id="gate-title"></h1>
-    <p class="note">Escribe el código de clase que te ha dado el profesor.</p>
-    <label for="gate-code" class="label">Código de clase</label>
-    <input id="gate-code" autocomplete="off" required>
-    <p id="gate-err" class="err" role="alert"></p>
-    <button class="btn" type="submit" id="gate-go">Entrar</button>
-  </form>
-</div>
 <div class="wrap">
   <header class="mast">
     <div class="deco label">Las Indias Films · Departamento de Caracterización</div>
@@ -208,7 +157,6 @@ body.locked .wrap{display:none}
     <button role="tab" id="t-historia" aria-controls="p-historia" aria-selected="true">La historia</button>
     <button role="tab" id="t-familias" aria-controls="p-familias" aria-selected="false">Las familias</button>
     <button role="tab" id="t-reparto" aria-controls="p-reparto" aria-selected="false">Reparto</button>
-    <button role="tab" id="t-galeria" aria-controls="p-galeria" aria-selected="false">Galería</button>
     <button role="tab" id="t-personaje" aria-controls="p-personaje" aria-selected="false">Tu personaje</button>
   </nav>
 
@@ -254,18 +202,10 @@ body.locked .wrap{display:none}
     <p class="note">No se puede repetir rol y cada familia necesita al menos dos personajes. Para reservar, entra en <a href="#familias" data-go="familias" style="color:var(--gold)">Las familias</a> y elige un rol libre.</p>
   </section>
 
-  <section role="tabpanel" id="p-galeria" aria-labelledby="t-galeria" hidden>
-    <div id="gal-list">
-      <p class="note" style="margin-bottom:14px">Todos los personajes del reparto. Pulsa uno para ver su ficha completa: historia, documentación y diseños, que se van completando en cada unidad.</p>
-      <div class="gal" id="gal"></div>
-    </div>
-    <div id="gal-ficha" hidden></div>
-  </section>
-
   <section role="tabpanel" id="p-personaje" aria-labelledby="t-personaje" hidden>
     <div class="banner" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border-color:var(--gold)">
       <span>¿Ya has reservado tu rol? Escribe aquí la historia de tu personaje y envíasela al profesor.</span>
-      <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" onclick="document.getElementById('escribir').scrollIntoView({behavior:'smooth'})">Escribir mi historia ↓</button><button class="btn ghost" type="button" onclick="document.getElementById('entregar').scrollIntoView({behavior:'smooth'})">Subir una entrega ↓</button></span>
+      <button class="btn" type="button" onclick="document.getElementById('escribir').scrollIntoView({behavior:'smooth'})">Escribir mi historia ↓</button>
     </div>
     <div class="grid2">
       <div class="box">
@@ -319,9 +259,6 @@ body.locked .wrap{display:none}
     <h2 style="font-size:26px" id="escribir">Escribe aquí la historia de tu personaje</h2>
     <p class="note">Lo que escribes se guarda solo en este navegador mientras trabajas. Cuando termines, pulsa <b>Enviar al profesor</b>. Puedes volver a enviarla si haces cambios: el profesor verá la última versión.</p>
     <form class="story" id="story" autocomplete="off"></form>
-    <h2 style="font-size:26px" id="entregar">Mis entregas</h2>
-    <p class="note">Sube aquí lo que vas haciendo en cada unidad: aparecerá en la ficha de tu personaje en la Galería. Los archivos de trabajo (PureRef, Photoshop, Blender…) se entregan en tu carpeta de Drive; aquí solo sube las imágenes exportadas.</p>
-    <form class="story" id="entrega" autocomplete="off"></form>
     <h2 style="font-size:26px">El entregable de la UT1</h2>
     <p class="note">Documento de planificación del proyecto, en la plantilla Excel. Nombre del archivo: <span style="font-family:var(--f-mono)">Apellido_Nombre_UT1_planificacion_v01</span>.</p>
     <div class="deliver">
@@ -380,10 +317,10 @@ function show(name){tabs.forEach(t=>{const on=t.id==="t-"+name;t.setAttribute("a
 tabs.forEach(t=>t.addEventListener("click",()=>show(t.id.slice(2))));
 document.querySelectorAll("[data-go]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();show(a.dataset.go)}));
 (()=>{let h=(location.hash||"").slice(1);let s=null;try{s=localStorage.getItem("bw-tab")}catch(e){}
-  const n=["historia","familias","reparto","galeria","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
+  const n=["historia","familias","reparto","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
 
 /* state */
-const S={historias:{},entregas:[],code:"",openFicha:null,remote:false,pin:"",local:false,claims:{},db:null,user:null,uid:null,canAdmin:false,ready:false,openFam:null,claiming:null,err:"",offline:false};
+const S={remote:false,pin:"",local:false,claims:{},db:null,user:null,uid:null,canAdmin:false,ready:false,openFam:null,claiming:null,err:"",offline:false};
 const famOf=id=>FAM.find(f=>f.id===id);
 const roleName=(c)=>{if(c.custom)return c.roleName||"Rol propio";const f=famOf(c.fam);const r=f&&f.roles.find(r=>r.id===c.role);return r?r.name:c.role};
 const claimsByFam=fid=>Object.values(S.claims).filter(c=>c.fam===fid);
@@ -526,7 +463,7 @@ function renderLedger(){
   else if(S.local)sync.textContent=total+" de 17 alumnas con rol reservado · modo local: se guarda solo en este navegador. Para compartirlo en directo, abre la web desde claude.ai con tu cuenta.";
   else sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza en directo.";
 }
-function renderAll(){renderFams();renderDetail();renderLedger();if(window.__galReady){renderGaleria();buildEntrega();entregaRoles()}if(window.__storyReady){buildStory();roleOptions()}}
+function renderAll(){renderFams();renderDetail();renderLedger();if(window.__storyReady){buildStory();roleOptions()}}
 renderAll();
 
 
@@ -613,187 +550,18 @@ function downloadStory(){
   a.download=((ST.alumna||"alumna").trim().replace(/\s+/g,"_")+"_historia_personaje.doc");document.body.append(a);a.click();a.remove();
 }
 window.__storyReady=true;buildStory();
-
-/* ===== Código de clase ===== */
-function initGate(){
-  try{S.code=localStorage.getItem("bw-code")||""}catch(e){}
-  document.getElementById("gate-title").textContent=document.title;
-  if(!S.code)lockGate("");
-  document.getElementById("gate-form").addEventListener("submit",async e=>{e.preventDefault();
-    const v=document.getElementById("gate-code").value.trim();if(!v)return;
-    const b=document.getElementById("gate-go");b.disabled=true;b.textContent="Comprobando… puede tardar unos segundos";
-    S.code=v;try{localStorage.setItem("bw-code",v)}catch(e){}
-    await refresh();b.disabled=false;b.textContent="Entrar"});
-}
-function lockGate(msg){document.body.classList.add("locked");const g=document.getElementById("gate");g.hidden=false;
-  document.getElementById("gate-err").textContent=msg||"";setTimeout(()=>{const i=document.getElementById("gate-code");if(i)i.focus()},0)}
-function unlockGate(){document.body.classList.remove("locked");document.getElementById("gate").hidden=true}
-
-/* ===== Galería y fichas ===== */
-const UTS=[
- {ut:"UT1",t:"La historia"},
- {ut:"UT2",t:"Documentación",tipos:["Moodboard","Paleta de color","Referencia destacada"]},
- {ut:"UT3",t:"Concepto",tipos:["Thumbnails","Silueta","Concept sketch"]},
- {ut:"UT4",t:"Diseño 2D",tipos:["Character Sheet","Antes de la transformación","Después de la transformación","Detalle de caracterización"]},
- {ut:"UT5",t:"Diseño 3D",tipos:["Render 3D"]},
- {ut:"UT6",t:"Presentación",tipos:["Portfolio (PDF)","Otro material"]}
-];
-const imgUrl=(id,w)=>"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(w||1200);
-const fileUrl=id=>"https://drive.google.com/file/d/"+encodeURIComponent(id)+"/view";
-function roleLabel(id){const c=S.claims[id];for(const f of FAM){const r=f.roles.find(r=>r.id===id);if(r)return{f,rol:r.name}}
-  const f=c&&famOf(c.fam);return{f:f||FAM[0],rol:(c&&c.roleName)||"Rol propio"}}
-function charName(id){const h=S.historias[id];const c=S.claims[id];return (h&&h.data&&h.data.nombre)||(c&&c.personaje)||roleLabel(id).rol}
-function entregasDe(id){return S.entregas.filter(e=>e.roleId===id).sort((a,b)=>String(a.fecha)<String(b.fecha)?1:-1)}
-function utsHechas(id){const s=new Set(entregasDe(id).map(e=>e.ut));if(S.historias[id])s.add("UT1");return s}
-function renderGaleria(){
-  const box=document.getElementById("gal");if(!box)return;box.replaceChildren();
-  const ids=Object.keys(S.claims);
-  if(!ids.length){box.append(el("p",{class:"pend",text:S.ready?"Todavía no hay personajes reservados.":"Cargando el reparto…"}));}
-  const order=FAM.flatMap(f=>[...f.roles.map(r=>r.id),...ids.filter(i=>S.claims[i].fam===f.id&&!f.roles.some(r=>r.id===i))]);
-  order.filter(id=>S.claims[id]).forEach(id=>{
-    const {f,rol}=roleLabel(id);const c=S.claims[id];const nm=charName(id);
-    const img=entregasDe(id).find(e=>e.fileId);const done=utsHechas(id);
-    const pic=img?el("img",{class:"gthumb",src:imgUrl(img.fileId,600),alt:"Imagen de "+nm,loading:"lazy"}):el("div",{class:"gph",text:(nm||"?").trim().charAt(0).toUpperCase()});
-    box.append(el("button",{class:"gcard",style:"--fc:"+f.c,onclick:()=>{S.openFicha=id;renderFicha();window.scrollTo({top:0})}},[pic,
-      el("div",{class:"gbody"},[el("b",{text:nm}),el("span",{text:f.n+" · "+rol}),el("span",{text:c.alumna||""}),
-        el("div",{class:"prog-ut",title:"Unidades completadas"},UTS.map(u=>el("i",{class:done.has(u.ut)?"on":""})))])]));
-  });
-  renderFicha();
-}
-function renderFicha(){
-  const list=document.getElementById("gal-list"),d=document.getElementById("gal-ficha");if(!d)return;
-  const id=S.openFicha;if(!id||!S.claims[id]){d.hidden=true;list.hidden=false;return}
-  list.hidden=true;d.hidden=false;d.replaceChildren();
-  const {f,rol}=roleLabel(id);const c=S.claims[id];const nm=charName(id);const ents=entregasDe(id);
-  const wrap=el("div",{class:"ficha",style:"--fc:"+f.c},[
-    el("div",{class:"top"},[el("div",{},[el("span",{class:"label",text:"Familia "+f.n+" · "+rol}),el("h2",{text:nm}),el("p",{class:"note",text:"Diseño de "+(c.alumna||"—")})]),
-      el("button",{class:"back",text:"← Toda la galería",onclick:()=>{S.openFicha=null;renderFicha()}})])
-  ]);
-  UTS.forEach(u=>{
-    const sec=el("section",{class:"utsec"},[el("h3",{},[el("span",{class:"label",text:u.ut}),u.t])]);
-    if(u.ut==="UT1"){
-      const h=S.historias[id];
-      if(!h)sec.append(el("p",{class:"pend",text:"Pendiente: la historia todavía no se ha enviado."}));
-      else{const g=el("div",{class:"hist"});
-        HF.filter(s=>s.f).forEach(s=>s.f.forEach(([k,lab])=>{const v=(h.data[k]||"").trim();if(v)g.append(el("div",{},[el("span",{class:"label",text:lab}),el("p",{text:v})]))}));
-        sec.append(g);}
-    }else{
-      const es=ents.filter(e=>e.ut===u.ut).sort((x,y)=>{const ix=u.tipos.indexOf(x.tipo),iy=u.tipos.indexOf(y.tipo);return ix-iy});
-      if(!es.length)sec.append(el("p",{class:"pend",text:"Pendiente."}));
-      else{
-        const imgs=el("div",{class:"imgs"});
-        es.forEach(e=>{
-          const parts=[];
-          if(e.fileId)parts.push(el("a",{href:fileUrl(e.fileId),target:"_blank",rel:"noopener"},[el("img",{src:imgUrl(e.fileId,1600),alt:e.tipo+" de "+nm,loading:"lazy"})]));
-          if(e.colores){const cs=e.colores.split(/[\s,;]+/).filter(x=>/^#?[0-9a-f]{6}$/i.test(x)).map(x=>x[0]==="#"?x:"#"+x);
-            if(cs.length)parts.push(el("div",{class:"pal"},cs.map(x=>el("div",{},[el("i",{style:"background:"+x}),x.toUpperCase()]))));}
-          const cap=[el("b",{text:e.tipo})];if(e.nota)cap.push(el("span",{text:" · "+e.nota}));
-          const meta=el("div",{class:"ent-meta"},[el("figcaption",{},cap)]);
-          if(e.enlace)meta.append(el("a",{class:"btn ghost",href:e.enlace,target:"_blank",rel:"noopener",text:"Abrir"}));
-          if(S.pin)meta.append(el("button",{class:"btn ghost",type:"button",text:"Ocultar",onclick:()=>ocultar(e.id)}));
-          parts.push(meta);
-          imgs.append(el("figure",{class:/Moodboard|Paleta|Character Sheet|Portfolio/.test(e.tipo)?"wide":""},parts));
-        });
-        sec.append(imgs);
-      }
-    }
-    wrap.append(sec);
-  });
-  d.append(wrap);
-}
-async function ocultar(id){
-  try{const r=await api({action:"ocultar",id,pin:S.pin});if(!r.ok){alertMsg(r.error==="pin"?"Código del profesor incorrecto.":"No se pudo ocultar.");return}}catch(e){alertMsg("No hay conexión.");return}
-  S.entregas=S.entregas.filter(x=>x.id!==id);renderGaleria();
-}
-function alertMsg(t){const s=document.getElementById("sync");if(s)s.textContent=t}
-
-/* ===== Formulario de entregas ===== */
-const EN={role:"",alumna:"",ut:"UT2",tipo:"Moodboard",built:false,file:null};
-function buildEntrega(){
-  const form=document.getElementById("entrega");if(!form||EN.built)return;EN.built=true;
-  try{const o=JSON.parse(localStorage.getItem("bw-entrega")||"{}");EN.role=o.role||"";EN.alumna=o.alumna||""}catch(e){}
-  const save=()=>{try{localStorage.setItem("bw-entrega",JSON.stringify({role:EN.role,alumna:EN.alumna}))}catch(e){}};
-  const sRole=el("select",{id:"e-role",onchange:e=>{EN.role=e.target.value;const c=S.claims[EN.role];if(c&&!EN.alumna){EN.alumna=c.alumna;aIn.value=EN.alumna}save()}});
-  const aIn=el("input",{id:"e-alumna",maxlength:"60",value:EN.alumna,oninput:e=>{EN.alumna=e.target.value;save()}});
-  const sUt=el("select",{id:"e-ut",onchange:e=>{EN.ut=e.target.value;fillTipos()}},UTS.filter(u=>u.tipos).map(u=>el("option",{value:u.ut,text:u.ut+" · "+u.t})));
-  const sTipo=el("select",{id:"e-tipo",onchange:e=>{EN.tipo=e.target.value;toggle()}});
-  const fIn=el("input",{id:"e-file",type:"file",accept:"image/*",onchange:e=>{EN.file=e.target.files[0]||null;preview()}});
-  const prev=el("div",{class:"imgs",style:"grid-template-columns:repeat(auto-fill,minmax(140px,1fr))"});
-  const cIn=el("input",{id:"e-col",maxlength:"120",placeholder:"#0E0B0F, #6E1F2A, #B8913F, #EFE6D3, #B08D57",oninput:()=>palPrev()});
-  const cPrev=el("div",{class:"pal"});
-  const lIn=el("input",{id:"e-link",type:"url",maxlength:"500",placeholder:"https://drive.google.com/…"});
-  const nIn=el("textarea",{id:"e-nota",maxlength:"1000",style:"min-height:60px"});
-  const rFile=el("div",{class:"f"},[el("label",{for:"e-file",text:"Imagen (JPG o PNG)"}),el("small",{text:"Se reduce sola a 2000 px antes de subirla."}),fIn,prev]);
-  const rCol=el("div",{class:"f"},[el("label",{for:"e-col",text:"Códigos de color (HEX)"}),el("small",{text:"De 5 a 7 colores separados por comas, copiados de Adobe Color."}),cIn,cPrev]);
-  const rLink=el("div",{class:"f"},[el("label",{for:"e-link",text:"Enlace (PDF en Drive, Canva…)"}),el("small",{text:"Comprueba que el enlace está compartido como «Cualquier persona con el enlace»."}),lIn]);
-  function fillTipos(){const u=UTS.find(x=>x.ut===EN.ut);sTipo.replaceChildren(...u.tipos.map(t=>el("option",{value:t,text:t})));EN.tipo=u.tipos[0];toggle()}
-  function toggle(){const t=EN.tipo;rCol.hidden=t!=="Paleta de color";rLink.hidden=!/Portfolio|Otro/.test(t);rFile.hidden=/Portfolio/.test(t)}
-  function preview(){prev.replaceChildren();if(EN.file)prev.append(el("figure",{},[el("img",{src:URL.createObjectURL(EN.file),alt:"Vista previa"})]))}
-  function palPrev(){const cs=cIn.value.split(/[\s,;]+/).filter(x=>/^#?[0-9a-f]{6}$/i.test(x)).map(x=>x[0]==="#"?x:"#"+x);cPrev.replaceChildren(...cs.map(x=>el("div",{},[el("i",{style:"background:"+x}),x.toUpperCase()])))}
-  const msg=el("p",{id:"e-msg",role:"status"});
-  const go=el("button",{class:"btn",type:"submit",text:"Subir entrega"});
-  form.append(
-    el("fieldset",{},[el("legend",{text:"Nueva entrega"}),
-      el("div",{class:"cols"},[el("div",{class:"f"},[el("label",{for:"e-role",text:"Personaje"}),sRole]),el("div",{class:"f"},[el("label",{for:"e-alumna",text:"Tu nombre"}),aIn])]),
-      el("div",{class:"cols"},[el("div",{class:"f"},[el("label",{for:"e-ut",text:"Unidad"}),sUt]),el("div",{class:"f"},[el("label",{for:"e-tipo",text:"Qué entregas"}),sTipo])]),
-      rFile,rCol,rLink,
-      el("div",{class:"f"},[el("label",{for:"e-nota",text:"Nota (opcional)"}),el("small",{text:"Qué muestra la imagen o qué decisión de diseño explica."}),nIn])]),
-    el("div",{class:"bar"},[el("span",{class:"prog",text:"Aparecerá en tu ficha de la Galería."}),go]),msg);
-  fillTipos();entregaRoles();
-  form.addEventListener("submit",async e=>{e.preventDefault();
-    const say=(t,ok)=>{msg.textContent=t;msg.className=ok?"msg-ok":"msg-bad"};
-    if(!S.remote){say("Las entregas solo se pueden subir desde la web publicada del proyecto.",false);return}
-    if(!EN.role||!S.claims[EN.role]){say("Elige tu personaje reservado.",false);return}
-    if(!EN.alumna.trim()){say("Escribe tu nombre.",false);return}
-    const t=EN.tipo,colores=t==="Paleta de color"?cIn.value.trim():"",enlace=rLink.hidden?"":lIn.value.trim();
-    if(t==="Paleta de color"&&!colores&&!EN.file){say("Escribe los códigos de color o sube una imagen de la paleta.",false);return}
-    if(/Portfolio/.test(t)&&!/^https?:\/\//.test(enlace)){say("Pega el enlace a tu portfolio.",false);return}
-    if(!/Portfolio|Paleta|Otro/.test(t)&&!EN.file){say("Elige la imagen que quieres subir.",false);return}
-    go.disabled=true;go.textContent="Subiendo… puede tardar hasta 30 segundos";
-    try{
-      const imagen=EN.file?await reducir(EN.file):"";
-      const {f,rol}=roleLabel(EN.role);
-      const r=await api({action:"entrega",roleId:EN.role,familia:f.n,rol,alumna:EN.alumna.trim(),ut:EN.ut,tipo:t,nota:nIn.value.trim(),colores,enlace,imagen,nombreArchivo:EN.ut+"_"+t.replace(/\W+/g,"-")+".jpg"});
-      if(!r.ok)throw new Error(r.error||"error");
-      say("Entrega subida. Ya aparece en tu ficha de la Galería.",true);
-      fIn.value="";EN.file=null;preview();nIn.value="";cIn.value="";palPrev();lIn.value="";
-      await refresh();
-    }catch(err){const m=String(err&&err.message);
-      say(m==="grande"?"La imagen es demasiado grande. Prueba con otra más ligera.":m==="drive"?"Google Drive no ha podido guardar la imagen. Avisa al profesor.":m==="accion"?"La hoja del profesor necesita actualizar su script para recibir entregas.":"No se pudo subir. Revisa tu conexión e inténtalo de nuevo.",false)}
-    go.disabled=false;go.textContent="Subir entrega";
-  });
-}
-function entregaRoles(){
-  const sel=document.getElementById("e-role");if(!sel)return;const cur=EN.role;
-  sel.replaceChildren(el("option",{value:"",text:"Elige tu personaje reservado…"}));
-  FAM.forEach(f=>{const g=el("optgroup",{label:f.n});
-    Object.values(S.claims).filter(c=>c.fam===f.id).forEach(c=>g.append(el("option",{value:c.id,text:roleLabel(c.id).rol+" · "+c.alumna})));
-    if(g.children.length)sel.append(g)});
-  sel.value=cur;
-}
-function reducir(file){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{
-  const k=Math.min(1,2000/Math.max(img.width,img.height));const cv=document.createElement("canvas");cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);
-  const cx=cv.getContext("2d");cx.fillStyle="#fff";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(img,0,0,cv.width,cv.height);
-  URL.revokeObjectURL(img.src);res(cv.toDataURL("image/jpeg",0.85))};img.onerror=()=>rej(new Error("imagen"));img.src=URL.createObjectURL(file)})}
-window.__galReady=true;renderGaleria();buildEntrega();
-
 /* local fallback */
 function loadLocal(){try{const v=JSON.parse(localStorage.getItem("bw-reparto")||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}}
 function saveLocal(){try{localStorage.setItem("bw-reparto",JSON.stringify(S.claims))}catch(e){S.err="Este navegador no permite guardar datos.";}}
 function goLocal(){S.local=true;S.offline=false;S.claims=loadLocal();S.ready=true;renderAll()}
 /* Google Sheets backend */
 async function api(payload){
-  const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify({...payload,code:S.code})});
-  const j=await r.json();
-  if(j&&j.error==="codigo"){lockGate("El código de clase ha cambiado. Escríbelo de nuevo.")}
-  return j;
+  const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload)});
+  return r.json();
 }
 async function refresh(){
   try{
-    const r=await (await fetch(SHEET_URL+"?code="+encodeURIComponent(S.code)+"&t="+Date.now())).json();
-    if(r&&r.error==="codigo"){S.ready=true;lockGate(S.code?"Código incorrecto. Inténtalo de nuevo.":"");return}
-    unlockGate();
-    S.historias=r.historias||{};S.entregas=Array.isArray(r.entregas)?r.entregas:[];
+    const r=await (await fetch(SHEET_URL+"?t="+Date.now())).json();
     const m={};(r.claims||[]).forEach(c=>{if(c&&c.id&&c.alumna)m[c.id]={...c,custom:c.custom===true||c.custom==="TRUE"||c.custom==="true"}});
     S.claims=m;S.ready=true;S.offline=false;
   }catch(e){S.ready=true;S.offline=true}
@@ -804,14 +572,14 @@ function teacherBox(){
   box.hidden=!S.remote;
   const inp=document.getElementById("pin");const st=document.getElementById("pin-st");
   try{S.pin=sessionStorage.getItem("bw-pin")||""}catch(e){}
-  inp.value=S.pin||"";st.textContent=S.pin?"Modo profesor activo: puedes liberar roles y ocultar entregas.":"";
+  inp.value=S.pin||"";st.textContent=S.pin?"Modo profesor activo: puedes liberar roles.":"";
   document.getElementById("pin-form").addEventListener("submit",e=>{e.preventDefault();S.pin=inp.value.trim();
     try{sessionStorage.setItem("bw-pin",S.pin)}catch(e){}
-    st.textContent=S.pin?"Modo profesor activo: puedes liberar roles y ocultar entregas.":"";renderAll()});
+    st.textContent=S.pin?"Modo profesor activo: puedes liberar roles.":"";renderAll()});
 }
 /* live data */
 (async()=>{
-  if(SHEET_URL){S.remote=true;teacherBox();initGate();await refresh();setInterval(()=>{if(!document.hidden&&!S.claiming)refresh()},15000);return}
+  if(SHEET_URL){S.remote=true;teacherBox();await refresh();setInterval(()=>{if(!document.hidden&&!S.claiming)refresh()},15000);return}
   try{
     const [db,user]=await Promise.all([window.claude?.use?.("db")??null,window.claude?.use?.("user")??null]);
     S.db=db;S.user=user;

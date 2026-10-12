@@ -53,14 +53,6 @@ Cada envío se añade como una fila nueva en la pestaña **Historias** de la hoj
 Si una alumna envía varias veces, la última fila suya es la versión más reciente.
 Mientras escribe, su borrador se guarda en su navegador; también puede descargarlo en Word.
 
-## Código de clase, galería y entregas
-
-- Para entrar en la web hace falta el **código de clase** (`CODIGO_CLASE` en el script). Se lo das al grupo; la web lo recuerda en cada navegador.
-- La pestaña **Galería** muestra la ficha de cada personaje: historia (UT1) y las entregas de UT2 a UT6.
-- En **Tu personaje → Mis entregas** cada alumna sube sus imágenes. Se guardan en tu Google Drive, en la carpeta «… · Entregas», con una subcarpeta por personaje.
-- Cada entrega queda registrada en la pestaña **Entregas** de la hoja. Con tu código de profesor activo puedes **ocultar** cualquier entrega desde su ficha (o poner `FALSE` en la columna «Visible»).
-- Al actualizar el script, ejecuta una vez la función `autorizar` desde el editor para dar permiso de Drive, y publica una **nueva versión** de la implementación.
-
 ## Si algo falla
 
 - **«No hay conexión con el reparto»**: revisa que la URL termina en `/exec` y que la implementación tiene acceso para «Cualquier usuario».
