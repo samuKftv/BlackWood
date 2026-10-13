@@ -1074,7 +1074,6 @@ function drawLogin(){
     el("div",{class:"row"},[el("label",{for:"fx-pj",class:"label",text:"Personaje"}),sel]),
     el("div",{class:"row"},[el("label",{for:"fx-clave",class:"label",text:nueva?"Crea tu contraseña (mínimo 4 caracteres)":"Contraseña"}),el("input",{id:"fx-clave",type:"password",autocomplete:nueva?"new-password":"current-password",required:"",minlength:"4",maxlength:"60"})]),
     nueva?el("div",{class:"row"},[el("label",{for:"fx-clave2",class:"label",text:"Repite la contraseña"}),el("input",{id:"fx-clave2",type:"password",autocomplete:"new-password",required:"",maxlength:"60"})]):null,
-    nueva?el("p",{class:"note",text:"Es la primera vez que entras. Apúntala: el profesor la guarda por si la olvidas."}):null,
     fxMsg(),
     el("div",{class:"fx-acts"},[el("button",{class:"btn",type:"submit",text:F.busy?"Un momento…":(nueva?"Crear contraseña y entrar":"Entrar"),disabled:F.busy?"":null})]),
     el("p",{class:"note",text:"Puede tardar hasta 30 segundos."})
