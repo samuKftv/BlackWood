@@ -183,6 +183,7 @@ a.btn{text-decoration:none;display:inline-block}
 .mood.big{columns:2 280px}
 .fx-card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--fc);border-radius:4px;padding:16px;display:grid;gap:12px}
 .fx-card h3{font-size:22px}
+.fx-cats code,.fx-how code{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
 .fx-teacher{border:1px solid var(--gold);border-radius:4px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface)}
 </style>
 
@@ -732,9 +733,17 @@ a.btn{text-decoration:none;display:inline-block}
   <section role="tabpanel" id="p-fichas" aria-labelledby="t-fichas" hidden>
     <p class="note" style="text-align:center;max-width:66ch;margin-inline:auto">Aquí vive la documentación visual de tu personaje. Todo lo que subas a tu carpeta de Drive aparece en tu ficha. Al principio solo tú puedes ver la tuya.</p>
     <div class="fx-how">
-      <div class="box"><span class="label">Referencias</span><h3 style="font-size:18px">Tu moodboard</h3><p class="note">Sube a tu carpeta todas las imágenes de referencia que quieras, con cualquier nombre. Aparecen juntas, sin orden.</p></div>
+      <div class="box"><span class="label">Referencias</span><h3 style="font-size:18px">Tu moodboard</h3><p class="note">Mínimo 100 imágenes, pensadas para el aspecto <b>después</b> de la transformación, que es el que modelarás en 3D. Empieza el nombre de cada archivo por su categoría. Ej.: <code>PIEL_porcelana_01.jpg</code></p></div>
       <div class="box"><span class="label">Bocetos</span><h3 style="font-size:18px">Thumbnails y bocetos</h3><p class="note">Pon al principio del nombre <code>BOCETO_</code>. Ej.: <code>BOCETO_siluetas_01.jpg</code></p></div>
       <div class="box"><span class="label">Character Sheet</span><h3 style="font-size:18px">La lámina final</h3><p class="note">Pon al principio del nombre <code>CS_</code>. Ej.: <code>CS_Odette_v01.pdf</code>. Puede ser imagen o PDF.</p></div>
+    </div>
+    <div class="box fx-cats">
+      <span class="label">Categorías del moodboard</span>
+      <div class="tablewrap" style="border:0"><table style="min-width:0">
+        <thead><tr><th>Empieza por</th><th>Qué buscar</th><th>Mínimo</th></tr></thead>
+        <tbody id="fx-cats"></tbody>
+      </table></div>
+      <p class="note">Imágenes grandes (que se vean bien a pantalla completa, unos 1000 px o más). Usa Pinterest para buscar, pero intenta llegar a la imagen original: museos, archivos, fotógrafos. Si quieres guardar referencias del aspecto anterior, empieza el nombre por <code>ANTES_</code>; no cuentan para el mínimo.</p>
     </div>
     <div id="fx-teacher"></div>
     <div id="fx-main"></div>
@@ -1054,6 +1063,29 @@ function fxMsg(){return F.msg?el("p",{class:F.ok?"msg-ok":"msg-bad",text:F.msg})
 async function fxCall(p){const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(p)});return r.json()}
 function saveSess(){try{sessionStorage.setItem("bw-ficha",JSON.stringify({id:F.id,clave:F.clave}))}catch(e){}}
 
+const CATS=[["ROSTRO_","Rostro","La cara transformada: prótesis faciales, hocicos, cuernos, ojos de animal, dientes, expresiones. Caras reales parecidas a tu intérprete tipo.",15],
+["PIEL_","Piel y FX","Texturas en primer plano: quemaduras, escamas, porcelana craquelada, piel ahogada, cicatrices, envejecimiento, hollín, sangre seca.",20],
+["CRIATURA_","Criatura","Referencia biológica real de lo que imita tu personaje: lobos, reptiles, murciélagos, peces, anfibios, muñecas antiguas…",10],
+["CUERPO_","Cuerpo","Anatomía, postura, proporciones, manos y garras, siluetas de cuerpo entero.",10],
+["CABELLO_","Cabello","Peinados de la época y su versión dañada: quemado, mojado, con algas; pelaje; pelucas.",10],
+["VESTUARIO_","Vestuario","Prendas reales de época (museos como el Met o el V&A), tejidos, accesorios; tela quemada, mojada o desgarrada.",15],
+["EPOCA_","Época","Fotografías reales de los años 20: retratos, ambientes, carteles.",5],
+["REFERENTE_","Referentes","Trabajos de caracterización de cine y series para analizar la técnica, no para copiar.",10],
+["COLOR_","Color","Iluminación, ambientes y combinaciones de color para tu paleta en Adobe Color.",5]];
+const CAT_MIN=CATS.reduce((a,c)=>a+c[3],0);
+const catOf=o=>{const u=String(o.n||"").toUpperCase();const c=CATS.find(c=>u.startsWith(c[0]));return c?c[0]:(u.startsWith("ANTES_")?"ANTES_":"")};
+function moodBlocks(refs){
+  const by={};refs.forEach(o=>{const k=catOf(o);(by[k]=by[k]||[]).push(o)});
+  const n=CATS.reduce((a,c)=>a+Math.min((by[c[0]]||[]).length,c[3]),0);
+  const out=[el("h3",{style:"font-size:22px;color:var(--gold)",text:"Moodboard · "+n+" de "+CAT_MIN})];
+  CATS.forEach(([p,name,,min])=>{const l=by[p]||[];
+    out.push(el("div",{class:"fx-block"},[el("h3",{},[el("span",{text:name+" "}),el("span",{class:"count "+(l.length>=min?"ok":"low"),text:l.length+" de "+min})]),
+      l.length?grid(l):el("p",{class:"empty",text:"Ninguna imagen que empiece por "+p})]))});
+  if((by["ANTES_"]||[]).length)out.push(block("Antes de la transformación",by["ANTES_"],""));
+  if((by[""]||[]).length)out.push(block("Sin categoría",by[""],""));
+  return out}
+function catLine(refs){const by={};refs.forEach(o=>{const k=catOf(o);by[k]=(by[k]||0)+1});
+  return el("div",{class:"fx-acts"},CATS.map(([p,name,,min])=>el("span",{class:"count "+((by[p]||0)>=min?"ok":"low"),text:name+" "+(by[p]||0)+"/"+min})))}
 function renderFichas(force){
   const main=$("#fx-main");if(!main)return;
   renderTeacherFx();
@@ -1109,7 +1141,7 @@ function drawFicha(){
     f.tieneCarpeta&&!n?el("p",{class:"banner",text:"Tu carpeta está vacía. Sube tus imágenes y pulsa «Actualizar» (pueden tardar un minuto en aparecer)."}):null,
     block("Character Sheet",f.img.cs,"Todavía no hay ningún archivo que empiece por CS_.",true),
     block("Bocetos y thumbnails",f.img.bocetos,"Todavía no hay ningún archivo que empiece por BOCETO_."),
-    block("Moodboard de referencias",f.img.refs,"Todavía no hay imágenes de referencia."),
+    ...moodBlocks(f.img.refs),
     F.galeria?el("div",{class:"fx-acts"},[el("button",{class:"btn",type:"button",text:F.verGal?"Ocultar la galería de la clase":"Ver la galería de la clase",onclick:()=>{F.verGal=!F.verGal;if(F.verGal)loadGal();else $("#fx-gal").replaceChildren();drawFicha()}})]):null
   ]));
 }
@@ -1129,7 +1161,8 @@ function drawGal(list,asTeacher){
           el("div",{class:"fx-acts"},[el("span",{class:"tag",text:all.length+" imágenes"}),asTeacher&&f.carpeta?el("a",{class:"btn ghost",href:f.carpeta,target:"_blank",rel:"noopener",text:"Carpeta ↗"}):null,asTeacher&&!f.tieneCarpeta?el("span",{class:"tag",text:"Sin carpeta"}):null])]),
         f.img.cs.length?block("Character Sheet",f.img.cs,"",true):null,
         f.img.bocetos.length?block("Bocetos",f.img.bocetos,""):null,
-        f.img.refs.length?block("Moodboard",f.img.refs,""):null,
+        catLine(f.img.refs),
+        f.img.refs.length?el("div",{class:"fx-block"},[el("h3",{text:"Moodboard · "+f.img.refs.length}),grid(f.img.refs)]):null,
         !all.length?el("p",{class:"empty",text:"Todavía sin imágenes."}):null])}));
 }
 async function fxResume(){if(!F.id||!F.clave||F.ficha)return;
@@ -1145,6 +1178,7 @@ function renderTeacherFx(){
   t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
 }
 
+(()=>{const t=document.getElementById("fx-cats");if(t)CATS.forEach(([p,,q,m])=>t.append(el("tr",{},[el("td",{},[el("code",{text:p})]),el("td",{text:q}),el("td",{text:String(m)})])))})();
 /* Google Sheets backend */
 async function api(payload){
   const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload)});
