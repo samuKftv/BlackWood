@@ -164,6 +164,26 @@ tr:last-child td{border-bottom:0}
 .guion table{min-width:560px}
 .guion .hl{background:color-mix(in srgb,var(--gold) 16%,transparent);outline:1px solid color-mix(in srgb,var(--gold) 50%,transparent)}
 .guion.filtering .g-dlg:not(.hl){opacity:.55}
+
+/* fichas */
+.fx-how{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fx-how code{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
+.fx-login{border:1px dashed var(--gold);border-radius:4px;padding:18px;display:grid;gap:12px;background:var(--surface);max-width:520px;width:100%;margin-inline:auto}
+.fx-login .row{display:grid;gap:4px}
+.fx-login input,.fx-login select{font:inherit;font-size:16px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:100%}
+.fx-head{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px}
+.fx-head h2{font-size:clamp(26px,5vw,38px)}
+.fx-acts{display:flex;flex-wrap:wrap;gap:8px}
+a.btn{text-decoration:none;display:inline-block}
+.fx-block{display:grid;gap:10px}
+.fx-block h3{font-size:20px;color:var(--gold)}
+.mood{columns:3 200px;column-gap:10px}
+.mood a{display:block;break-inside:avoid;margin-bottom:10px;border-radius:4px;overflow:hidden;border:1px solid var(--line);background:var(--raise)}
+.mood img{display:block;width:100%;height:auto;min-height:60px}
+.mood.big{columns:2 280px}
+.fx-card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--fc);border-radius:4px;padding:16px;display:grid;gap:12px}
+.fx-card h3{font-size:22px}
+.fx-teacher{border:1px solid var(--gold);border-radius:4px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface)}
 </style>
 
 </head>
@@ -181,6 +201,7 @@ tr:last-child td{border-bottom:0}
     <button role="tab" id="t-familias" aria-controls="p-familias" aria-selected="false">Las familias</button>
     <button role="tab" id="t-reparto" aria-controls="p-reparto" aria-selected="false">Reparto</button>
     <button role="tab" id="t-personaje" aria-controls="p-personaje" aria-selected="false">Tu personaje</button>
+    <button role="tab" id="t-fichas" aria-controls="p-fichas" aria-selected="false">Fichas</button>
   </nav>
 
   <section role="tabpanel" id="p-historia" aria-labelledby="t-historia">
@@ -708,6 +729,18 @@ tr:last-child td{border-bottom:0}
       <div class="box"><span class="label">Parte 3</span><h3>Cronograma</h3><p class="note">Fechas de inicio y entrega de cada fase, las tres presentaciones marcadas y margen antes de UT4 y UT5.</p></div>
     </div>
   </section>
+  <section role="tabpanel" id="p-fichas" aria-labelledby="t-fichas" hidden>
+    <p class="note" style="text-align:center;max-width:66ch;margin-inline:auto">Aquí vive la documentación visual de tu personaje. Todo lo que subas a tu carpeta de Drive aparece en tu ficha. Al principio solo tú puedes ver la tuya.</p>
+    <div class="fx-how">
+      <div class="box"><span class="label">Referencias</span><h3 style="font-size:18px">Tu moodboard</h3><p class="note">Sube a tu carpeta todas las imágenes de referencia que quieras, con cualquier nombre. Aparecen juntas, sin orden.</p></div>
+      <div class="box"><span class="label">Bocetos</span><h3 style="font-size:18px">Thumbnails y bocetos</h3><p class="note">Pon al principio del nombre <code>BOCETO_</code>. Ej.: <code>BOCETO_siluetas_01.jpg</code></p></div>
+      <div class="box"><span class="label">Character Sheet</span><h3 style="font-size:18px">La lámina final</h3><p class="note">Pon al principio del nombre <code>CS_</code>. Ej.: <code>CS_Odette_v01.pdf</code>. Puede ser imagen o PDF.</p></div>
+    </div>
+    <div id="fx-teacher"></div>
+    <div id="fx-main"></div>
+    <div id="fx-gal"></div>
+  </section>
+
 </div>
 
 <script>
@@ -758,7 +791,7 @@ function show(name){tabs.forEach(t=>{const on=t.id==="t-"+name;t.setAttribute("a
 tabs.forEach(t=>t.addEventListener("click",()=>show(t.id.slice(2))));
 document.querySelectorAll("[data-go]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();show(a.dataset.go)}));
 (()=>{let h=(location.hash||"").slice(1);let s=null;try{s=localStorage.getItem("bw-tab")}catch(e){}
-  const n=["historia","guion","familias","reparto","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
+  const n=["historia","guion","familias","reparto","personaje","fichas"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
 
 
 /* guion: resaltar personaje */
@@ -914,7 +947,7 @@ function renderLedger(){
   else if(S.local)sync.textContent=total+" de 17 alumnas con rol reservado · modo local: se guarda solo en este navegador. Para compartirlo en directo, abre la web desde claude.ai con tu cuenta.";
   else sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza en directo.";
 }
-function renderAll(){renderFams();renderDetail();renderLedger();if(window.__storyReady){buildStory();roleOptions()}}
+function renderAll(){renderFams();renderDetail();renderLedger();if(typeof renderFichas==="function")renderFichas(false);if(window.__storyReady){buildStory();roleOptions()}}
 renderAll();
 
 
@@ -1005,6 +1038,114 @@ window.__storyReady=true;buildStory();
 function loadLocal(){try{const v=JSON.parse(localStorage.getItem("bw-reparto")||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}}
 function saveLocal(){try{localStorage.setItem("bw-reparto",JSON.stringify(S.claims))}catch(e){S.err="Este navegador no permite guardar datos.";}}
 function goLocal(){S.local=true;S.offline=false;S.claims=loadLocal();S.ready=true;renderAll()}
+
+/* ===== FICHAS ===== */
+const F={id:"",clave:"",ficha:null,fichas:null,galeria:false,conClave:[],busy:false,msg:"",ok:false,verGal:false};
+try{const o=JSON.parse(sessionStorage.getItem("bw-ficha")||"{}");F.id=o.id||"";F.clave=o.clave||""}catch(e){}
+const famColor=id=>(famOf(id)||{c:"var(--gold)"}).c;
+const pjName=c=>c.personaje||((famOf(c.fam)||{roles:[]}).roles.find(r=>r.id===c.id)||{}).name||c.roleName||c.id;
+function img(o,cls){const a=el("a",{href:"https://drive.google.com/file/d/"+o.id+"/view",target:"_blank",rel:"noopener",title:o.n});
+  const i=el("img",{src:"https://drive.google.com/thumbnail?id="+o.id+"&sz=w800",alt:o.n,loading:"lazy",referrerpolicy:"no-referrer"});
+  i.addEventListener("error",()=>{if(!i.dataset.f){i.dataset.f=1;i.src="https://lh3.googleusercontent.com/d/"+o.id+"=w800"}},{once:false});
+  a.append(i);return a}
+function grid(list,big){return el("div",{class:"mood"+(big?" big":"")},list.map(o=>img(o)))}
+function block(title,list,empty,big){return el("div",{class:"fx-block"},[el("h3",{text:title+(list.length?" · "+list.length:"")}),list.length?grid(list,big):el("p",{class:"empty",text:empty})])}
+function fxMsg(){return F.msg?el("p",{class:F.ok?"msg-ok":"msg-bad",text:F.msg}):null}
+async function fxCall(p){const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(p)});return r.json()}
+function saveSess(){try{sessionStorage.setItem("bw-ficha",JSON.stringify({id:F.id,clave:F.clave}))}catch(e){}}
+
+function renderFichas(force){
+  const main=$("#fx-main");if(!main)return;
+  renderTeacherFx();
+  if(!S.remote){main.replaceChildren(el("p",{class:"banner",text:"Las fichas solo funcionan con la hoja del profesor conectada."}));return}
+  if(F.ficha){if(force!==false)drawFicha();return}
+  const sel=$("#fx-pj");
+  if(sel&&(document.activeElement===sel||document.activeElement===$("#fx-clave")||document.activeElement===$("#fx-clave2"))&&!force)return;
+  drawLogin();
+}
+function drawLogin(){
+  const main=$("#fx-main");const prev=($("#fx-pj")||{}).value||F.id;const pv=($("#fx-clave")||{}).value||"";
+  const list=Object.values(S.claims).sort((a,b)=>pjName(a).localeCompare(pjName(b),"es"));
+  const sel=el("select",{id:"fx-pj"},[el("option",{value:"",text:"Elige tu personaje"}),...list.map(c=>el("option",{value:c.id,text:pjName(c)+" · "+c.alumna}))]);
+  sel.value=prev||"";
+  const nueva=sel.value&&!F.conClave.includes(sel.value);
+  const form=el("form",{class:"fx-login"},[
+    el("span",{class:"label",text:"Entrar en tu ficha"}),
+    el("div",{class:"row"},[el("label",{for:"fx-pj",class:"label",text:"Personaje"}),sel]),
+    el("div",{class:"row"},[el("label",{for:"fx-clave",class:"label",text:nueva?"Crea tu contraseña (mínimo 4 caracteres)":"Contraseña"}),el("input",{id:"fx-clave",type:"password",autocomplete:nueva?"new-password":"current-password",required:"",minlength:"4",maxlength:"60"})]),
+    nueva?el("div",{class:"row"},[el("label",{for:"fx-clave2",class:"label",text:"Repite la contraseña"}),el("input",{id:"fx-clave2",type:"password",autocomplete:"new-password",required:"",maxlength:"60"})]):null,
+    nueva?el("p",{class:"note",text:"Es la primera vez que entras. Apúntala: el profesor la guarda por si la olvidas."}):null,
+    fxMsg(),
+    el("div",{class:"fx-acts"},[el("button",{class:"btn",type:"submit",text:F.busy?"Un momento…":(nueva?"Crear contraseña y entrar":"Entrar"),disabled:F.busy?"":null})]),
+    el("p",{class:"note",text:"Puede tardar hasta 30 segundos."})
+  ]);
+  sel.addEventListener("change",()=>{F.msg="";drawLogin()});
+  form.addEventListener("submit",async e=>{e.preventDefault();const id=sel.value,cl=$("#fx-clave").value;
+    if(!id){F.msg="Elige tu personaje.";F.ok=false;drawLogin();return}
+    if(nueva&&cl!==$("#fx-clave2").value){F.msg="Las dos contraseñas no coinciden.";F.ok=false;drawLogin();return}
+    F.busy=true;F.msg="";drawLogin();
+    try{
+      if(nueva){const r=await fxCall({action:"clave",id,clave:cl});
+        if(!r.ok&&r.error!=="existe"){F.busy=false;F.msg=r.error==="corta"?"La contraseña debe tener al menos 4 caracteres.":"No se pudo crear la contraseña.";F.ok=false;drawLogin();return}
+        if(r.ok)F.conClave.push(id)}
+      const r=await fxCall({action:"ficha",id,clave:cl});F.busy=false;
+      if(!r.ok){F.msg=r.error==="clave"?"Contraseña incorrecta.":"No se pudo abrir la ficha.";F.ok=false;drawLogin();return}
+      F.id=id;F.clave=cl;F.ficha=r.ficha;F.galeria=r.galeria;F.msg="";saveSess();drawFicha();
+    }catch(err){F.busy=false;F.msg="No hay conexión con la hoja. Inténtalo de nuevo.";F.ok=false;drawLogin()}
+  });
+  main.replaceChildren(form);
+  if(pv)$("#fx-clave").value=pv;
+}
+function drawFicha(){
+  const f=F.ficha,main=$("#fx-main");
+  const reload=async()=>{F.busy=true;drawFicha();try{const r=await fxCall({action:"ficha",id:F.id,clave:F.clave});if(r.ok){F.ficha=r.ficha;F.galeria=r.galeria}}catch(e){}F.busy=false;drawFicha()};
+  const out=()=>{F.ficha=null;F.fichas=null;F.clave="";F.verGal=false;saveSess();$("#fx-gal").replaceChildren();drawLogin()};
+  const n=f.img.cs.length+f.img.bocetos.length+f.img.refs.length;
+  main.replaceChildren(el("div",{class:"detail",style:"--fc:"+famColor(f.fam)},[
+    el("div",{class:"fx-head"},[el("div",{},[el("span",{class:"label",text:(famOf(f.fam)||{n:""}).n+" · "+f.alumna}),el("h2",{text:pjName(f)})]),
+      el("div",{class:"fx-acts"},[f.carpeta?el("a",{class:"btn",href:f.carpeta,target:"_blank",rel:"noopener",text:"Abrir mi carpeta ↗"}):null,
+        el("button",{class:"btn ghost",type:"button",text:F.busy?"Actualizando…":"Actualizar",onclick:reload}),
+        el("button",{class:"btn ghost",type:"button",text:"Salir",onclick:out})])]),
+    !f.tieneCarpeta?el("p",{class:"banner",text:"El profesor todavía no ha creado tu carpeta de Drive. Cuando la tengas, tus imágenes aparecerán aquí."}):null,
+    f.tieneCarpeta&&!n?el("p",{class:"banner",text:"Tu carpeta está vacía. Sube tus imágenes y pulsa «Actualizar» (pueden tardar un minuto en aparecer)."}):null,
+    block("Character Sheet",f.img.cs,"Todavía no hay ningún archivo que empiece por CS_.",true),
+    block("Bocetos y thumbnails",f.img.bocetos,"Todavía no hay ningún archivo que empiece por BOCETO_."),
+    block("Moodboard de referencias",f.img.refs,"Todavía no hay imágenes de referencia."),
+    F.galeria?el("div",{class:"fx-acts"},[el("button",{class:"btn",type:"button",text:F.verGal?"Ocultar la galería de la clase":"Ver la galería de la clase",onclick:()=>{F.verGal=!F.verGal;if(F.verGal)loadGal();else $("#fx-gal").replaceChildren();drawFicha()}})]):null
+  ]));
+}
+async function loadGal(asTeacher){
+  const g=$("#fx-gal");g.replaceChildren(el("p",{class:"note",style:"text-align:center",text:"Cargando la galería… puede tardar hasta 30 segundos."}));
+  try{const r=await fxCall(asTeacher?{action:"galeria",pin:S.pin}:{action:"galeria",id:F.id,clave:F.clave});
+    if(!r.ok){g.replaceChildren(el("p",{class:"msg-bad",text:r.error==="pin"||r.error==="clave"?"Código incorrecto.":r.error==="cerrada"?"La galería está cerrada.":"No se pudo cargar la galería."}));return}
+    drawGal(r.fichas,asTeacher)}catch(e){g.replaceChildren(el("p",{class:"msg-bad",text:"No hay conexión con la hoja."}))}
+}
+function drawGal(list,asTeacher){
+  const g=$("#fx-gal");
+  list.sort((a,b)=>FAM.findIndex(f=>f.id===a.fam)-FAM.findIndex(f=>f.id===b.fam)||String(a.id).localeCompare(String(b.id)));
+  g.replaceChildren(el("h2",{style:"text-align:center;font-size:28px",text:asTeacher?"Todas las fichas":"La galería de la clase"}),
+    ...list.map(f=>{const all=[...f.img.cs,...f.img.bocetos,...f.img.refs];
+      return el("div",{class:"fx-card",style:"--fc:"+famColor(f.fam)},[
+        el("div",{class:"fx-head",style:"border:0;padding:0"},[el("div",{},[el("span",{class:"label",text:(famOf(f.fam)||{n:""}).n+" · "+f.alumna}),el("h3",{text:pjName(f)})]),
+          el("div",{class:"fx-acts"},[el("span",{class:"tag",text:all.length+" imágenes"}),asTeacher&&f.carpeta?el("a",{class:"btn ghost",href:f.carpeta,target:"_blank",rel:"noopener",text:"Carpeta ↗"}):null,asTeacher&&!f.tieneCarpeta?el("span",{class:"tag",text:"Sin carpeta"}):null])]),
+        f.img.cs.length?block("Character Sheet",f.img.cs,"",true):null,
+        f.img.bocetos.length?block("Bocetos",f.img.bocetos,""):null,
+        f.img.refs.length?block("Moodboard",f.img.refs,""):null,
+        !all.length?el("p",{class:"empty",text:"Todavía sin imágenes."}):null])}));
+}
+async function fxResume(){if(!F.id||!F.clave||F.ficha)return;
+  try{const r=await fxCall({action:"ficha",id:F.id,clave:F.clave});if(r.ok){F.ficha=r.ficha;F.galeria=r.galeria;drawFicha()}else{F.clave="";saveSess()}}catch(e){}}
+function renderTeacherFx(){
+  const t=$("#fx-teacher");if(!t)return;
+  if(!S.remote||!S.pin){t.replaceChildren();return}
+  if(t.dataset.k===String(F.galeria)+S.pin)return;t.dataset.k=String(F.galeria)+S.pin;
+  const st=el("span",{class:"note",text:"Modo profesor · galería "+(F.galeria?"abierta: todas ven todas las fichas.":"cerrada: cada alumna solo ve la suya.")});
+  const tog=el("button",{class:"btn",type:"button",text:F.galeria?"Cerrar galería":"Abrir galería",onclick:async()=>{tog.disabled=true;tog.textContent="Un momento…";
+    try{const r=await fxCall({action:"abrirGaleria",pin:S.pin,abierta:!F.galeria});if(r.ok)F.galeria=r.galeria;else st.textContent="Código del profesor incorrecto."}catch(e){st.textContent="No hay conexión con la hoja."}
+    t.dataset.k="";renderTeacherFx();if(F.ficha)drawFicha()}});
+  t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
+}
+
 /* Google Sheets backend */
 async function api(payload){
   const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload)});
@@ -1015,6 +1156,7 @@ async function refresh(){
     const r=await (await fetch(SHEET_URL+"?t="+Date.now())).json();
     const m={};(r.claims||[]).forEach(c=>{if(c&&c.id&&c.alumna)m[c.id]={...c,custom:c.custom===true||c.custom==="TRUE"||c.custom==="true"}});
     S.claims=m;S.ready=true;S.offline=false;
+    if(Array.isArray(r.conClave))F.conClave=r.conClave.map(String);if(typeof r.galeria==="boolean")F.galeria=r.galeria;
   }catch(e){S.ready=true;S.offline=true}
   renderAll();
 }
@@ -1030,7 +1172,7 @@ function teacherBox(){
 }
 /* live data */
 (async()=>{
-  if(SHEET_URL){S.remote=true;teacherBox();await refresh();setInterval(()=>{if(!document.hidden&&!S.claiming)refresh()},15000);return}
+  if(SHEET_URL){S.remote=true;teacherBox();await refresh();fxResume();setInterval(()=>{if(!document.hidden&&!S.claiming)refresh()},15000);return}
   try{
     const [db,user]=await Promise.all([window.claude?.use?.("db")??null,window.claude?.use?.("user")??null]);
     S.db=db;S.user=user;
