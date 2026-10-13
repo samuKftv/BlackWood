@@ -142,6 +142,28 @@ tr:last-child td{border-bottom:0}
 .story .acts{display:flex;gap:8px;flex-wrap:wrap}
 .prog{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
 .msg-ok{color:var(--ok);font-size:14.5px}.msg-bad{color:var(--bad);font-size:14.5px}
+
+/* screenplay */
+.g-top{display:grid;gap:12px;max-width:72ch;margin-inline:auto;width:100%}
+.g-chips{display:flex;flex-wrap:wrap;gap:6px}
+.g-chip{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.g-chip:hover{border-color:var(--gold);color:var(--gold)}
+.g-filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.g-filter select{font:inherit;font-size:15px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:6px 10px;max-width:100%}
+.guion{max-width:72ch;margin-inline:auto;width:100%;display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:clamp(18px,4vw,40px)}
+.guion h3.g-act{font-size:clamp(24px,4vw,30px);color:var(--gold);text-align:center;border-block:1px solid var(--line);padding-block:10px;margin-top:22px;scroll-margin-top:80px}
+.guion h3.g-act:first-child{margin-top:0}
+.guion h4{font-family:var(--f-mono);font-weight:500;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:12px}
+.guion h4.g-scene{border-left:3px solid var(--gold);padding-left:10px}
+.guion .g-dlg{display:grid;gap:2px;margin-inline:clamp(0px,8%,70px);padding:4px 10px;border-radius:4px}
+.guion .g-name{font-family:var(--f-mono);font-size:13px;letter-spacing:.1em;text-align:center}
+.guion .g-par{display:block;text-align:center;font-style:italic;color:var(--muted);font-size:15px}
+.guion .g-dlg .g-par{text-align:center}
+.guion .g-note{border-left:3px solid var(--line);padding:6px 12px;color:var(--muted);font-size:15px;background:var(--bg)}
+.guion .g-end{font-family:var(--f-display);color:var(--gold);text-align:center;font-size:20px}
+.guion table{min-width:560px}
+.guion .hl{background:color-mix(in srgb,var(--gold) 16%,transparent);outline:1px solid color-mix(in srgb,var(--gold) 50%,transparent)}
+.guion.filtering .g-dlg:not(.hl){opacity:.55}
 </style>
 
 </head>
@@ -155,6 +177,7 @@ tr:last-child td{border-bottom:0}
 
   <nav class="tabs" role="tablist" aria-label="Secciones">
     <button role="tab" id="t-historia" aria-controls="p-historia" aria-selected="true">La historia</button>
+    <button role="tab" id="t-guion" aria-controls="p-guion" aria-selected="false">El guion</button>
     <button role="tab" id="t-familias" aria-controls="p-familias" aria-selected="false">Las familias</button>
     <button role="tab" id="t-reparto" aria-controls="p-reparto" aria-selected="false">Reparto</button>
     <button role="tab" id="t-personaje" aria-controls="p-personaje" aria-selected="false">Tu personaje</button>
@@ -171,6 +194,424 @@ tr:last-child td{border-bottom:0}
     <h2 style="text-align:center;font-size:26px;margin-top:10px">Estética común</h2>
     <p class="note" style="text-align:center">Obligatoria para todo el reparto.</p>
     <div class="est" id="estetica"></div>
+  </section>
+
+  <section role="tabpanel" id="p-guion" aria-labelledby="t-guion" hidden>
+    <div class="g-top">
+      <p class="note">Este es el guion de la película que vamos a caracterizar. Léelo entero: tu personaje aparece en varias escenas y su aspecto tiene que funcionar en todas ellas.</p>
+      <nav class="g-chips" aria-label="Actos"><a class="g-chip" href="#acto-0">Ficha de la producción</a><a class="g-chip" href="#acto-1">Acto I</a><a class="g-chip" href="#acto-2">Acto II</a><a class="g-chip" href="#acto-3">Acto III</a><a class="g-chip" href="#acto-4">Acto IV</a><a class="g-chip" href="#acto-5">Acto V</a></nav>
+      <div class="g-filter"><label class="label" for="g-pj">Resaltar las frases de</label>
+        <select id="g-pj"><option value="">Nadie</option></select></div>
+    </div>
+    <article class="guion" id="guion">
+<h3 class="g-act" id="acto-0">Ficha de la producción</h3>
+<p class="g-act-line"><b>Título:</b> <i>Blackwood, 1926</i><br><b>Producción:</b> Las Indias Films<br><b>Formato:</b> largometraje de fantasía gótica y misterio. Cinco actos, una sola noche y un solo escenario.<br><b>Versión:</b> borrador 1, para revisión del departamento de caracterización.</p>
+<p class="g-act-line"><b>Logline.</b> La noche del 14 de enero de 1926, seis familias que no son del todo humanas se reúnen en la mansión Blackwood para renovar el Acuerdo que las mantiene en paz. Cuando el eclipse revela sus verdaderas formas, la anfitriona aparece muerta al pie de la escalera. Todos tienen un motivo. Solo uno lo hizo, y lo hizo para salvarse.</p>
+<h4 class="g-sub">Reparto</h4>
+<div class="tablewrap"><table><tr><th>Familia</th><th>Personaje</th><th>Quién es</th><th>Diseño de caracterización</th></tr><tr><td>Blackwood</td><td><b>Severina Blackwood</b></td><td>La anfitriona. La única humana que conoce el secreto de las familias. Aparenta 60 años.</td><td>Departamento</td></tr><tr><td>Várkonyi</td><td><b>Sirush Várkonyi</b></td><td>La matriarca. Aparenta 30; tiene 600.</td><td>Sandra</td></tr><tr><td>Várkonyi</td><td><b>Aeris Várkonyi</b></td><td>El heredero, nieto de Sirush. Albino. Aparenta 18; tiene 50.</td><td>Paula</td></tr><tr><td>Várkonyi</td><td><b>Lázár Várkonyi</b></td><td>El hijo ilegítimo de Sirush. Desaparecido desde 1830.</td><td>Por asignar</td></tr><tr><td>Bathory</td><td><b>Vallora Bathory</b></td><td>La condesa, fundadora de la casa. Aparenta 35; tiene 250.</td><td>Bea</td></tr><tr><td>Bathory</td><td><b>Gala Bathory</b></td><td>La médica. Mano derecha de Vallora. Aparenta 30; tiene 500.</td><td>Natalí</td></tr><tr><td>Bathory</td><td><b>Elizabeth Bathory</b></td><td>La recién convertida. Tiene 21 años.</td><td>Jessica</td></tr><tr><td>Ashworth</td><td><b>Marian Ashworth</b></td><td>La mayor de las hermanas y guardiana del lago. Aparenta 22; tiene 312.</td><td>Por asignar</td></tr><tr><td>Ashworth</td><td><b>Genevieve Ashworth</b></td><td>«Vee», la novia ahogada. Nació Blackwood. Aparenta 21; tiene 116.</td><td>Celia</td></tr><tr><td>Ashworth</td><td><b>Adela Ashworth</b></td><td>La pequeña. Aparenta 20; tiene 307.</td><td>Shaila</td></tr><tr><td>Gévaudan</td><td><b>Damon Gévaudan</b></td><td>El cazador, cabeza de familia. Aparenta 40; tiene 165.</td><td>Elena</td></tr><tr><td>Gévaudan</td><td><b>Astrid Gévaudan</b></td><td>La viuda de Stefan, hermano de Damon. Aparenta 35; tiene 155.</td><td>Aroa</td></tr><tr><td>Gévaudan</td><td><b>Saeris Gévaudan</b></td><td>Hija de Astrid y Stefan. Aparenta 15; tiene 22.</td><td>Yanely</td></tr><tr><td>Kessler</td><td><b>Weinder Kessler</b></td><td>El relojero, creador de la familia. Aparenta 70.</td><td>Nicole</td></tr><tr><td>Kessler</td><td><b>Odette Kessler</b></td><td>La muñeca de porcelana, hija de Weinder. Aparenta 6.</td><td>Carla</td></tr><tr><td>Kessler</td><td><b>Katya Kessler</b></td><td>La creación cosida, guardiana de la familia. Aparenta 28; tiene 350.</td><td>Jordi</td></tr><tr><td>Ravenscroft</td><td><b>Agatha Ravenscroft</b></td><td>La gran bruja, autora del Acuerdo de 1826. Aparenta 25; tiene 412.</td><td>Por asignar</td></tr><tr><td>Ravenscroft</td><td><b>Belladona Ravenscroft</b></td><td>La adivina, sobrina de Agatha. Aparenta 20; tiene 350.</td><td>Amanda</td></tr><tr><td>Ravenscroft</td><td><b>Wren Ravenscroft</b></td><td>La aprendiz. Tiene 17 años.</td><td>Por asignar</td></tr></table></div>
+<p class="g-act-line"><b>Lugar único:</b> la mansión Blackwood, en mitad del páramo. Tiene vestíbulo, comedor, biblioteca, el salón del eclipse con su gran escalera y su cúpula de cristal, la galería alta, el cementerio familiar y la cripta.</p>
+<p class="g-act-line"><b>Convención de caracterización:</b> cada personaje tiene dos estados. <b>Estado A</b> es su aspecto social, a la llegada. <b>Estado B</b> es su forma verdadera, tras el eclipse. El cambio de A a B ocurre en la escena 9; desde ahí todos permanecen en estado B hasta el final, salvo que se indique otra cosa.</p>
+<h3 class="g-act" id="acto-1">Acto I · La llegada</h3>
+<h4 class="g-scene">Escena 1. EXT. PÁRAMO, CAMINO A LA MANSIÓN BLACKWOOD — NOCHE</h4>
+<p class="g-act-line">Niebla baja sobre el páramo. Una luna llena enorme, demasiado blanca. Por el camino de tierra avanzan, uno tras otro, los vehículos de los invitados: un automóvil negro de 1925 con el escudo de un dragón en la puerta, un coche fúnebre reconvertido en carruaje, una calesa con las ruedas cubiertas de barro de lago.</p>
+<p class="g-act-line">Al fondo, la mansión Blackwood: tres plantas de piedra oscura y, en lo alto, una cúpula de cristal que refleja la luna como un ojo abierto.</p>
+<p class="g-act-line">En la verja, un reloj de pared colgado de un poste marca las <b>22:00</b>.</p>
+<h4 class="g-scene">Escena 2. INT. VESTÍBULO DE LA MANSIÓN — NOCHE</h4>
+<p class="g-act-line">Mármol negro, espejos con el azogue podrido, velas en cada rincón. Al pie de la gran escalera espera <b>SEVERINA BLACKWOOD</b>: unos sesenta años, bellísima, el rostro cubierto de polvo de oro y un vestido de terciopelo negro que parece de otro siglo. Sujeta un bastón con empuñadura de plata. No lo necesita para andar.</p>
+<p class="g-act-line">Se abren las puertas. Entran los <b>VÁRKONYI</b>.</p>
+<p class="g-act-line"><b>SIRUSH VÁRKONYI</b> camina delante: rostro ovalado y dulce, pecas, labios rojos, una coleta alta de pelo negro y brillante. Traje negro de cuello alto con la espalda descubierta. Guantes brillantes. Se frota las manos sin darse cuenta.</p>
+<p class="g-act-line">Detrás, su nieto <b>AERIS VÁRKONYI</b>: piel blanquísima, ojos claros, el pelo albino recogido en una coleta impecable. Traje blanco y bronce sin una sola arruga. Guantes que solo cubren a medias unas manos agrietadas y amoratadas.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Sirush. Querida. Seis siglos y sigues entrando como si la casa fuera tuya.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span><span class="g-par">(le besa la mano; se la sostiene un segundo de más)</span>Es que un día lo fue, Severina. Este suelo era mi pueblo.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Los pueblos cambian de dueño.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Y las niñas también.</div>
+<p class="g-act-line">Severina sonríe como si no hubiera oído nada. Aeris observa la escena con la mirada perdida, analizando cada gesto. Severina se gira hacia él.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>El heredero. Tienes las manos frías, muchacho.</div>
+<div class="g-dlg" data-pj="AERIS"><span class="g-name">AERIS</span>Siempre.</div>
+<p class="g-act-line">Entran los <b>BATHORY</b>. Primero <b>VALLORA BATHORY</b>, la condesa: piel pálida y perfecta, labios rojos, moño clásico negro, vestido voluminoso de encaje granate y negro. Se mueve muy despacio, como si el aire pesara. Detrás, hablando a toda velocidad y parpadeando sin parar, <b>GALA BATHORY</b>: gafas redondas, ojeras profundas, el pelo corto por arriba y dos trenzas larguísimas a la espalda. Chaleco gótico de aire mecánico, pantalón abombado, un cuaderno de dibujo bajo el brazo.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span><span class="g-par">(a Vallora, en voz baja y muy deprisa)</span>Los Várkonyi han llegado antes, quiero ver cómo les cambian las escamas del cuello con la luz de las velas, ¿has visto el pulso en la sien del heredero?, no es humano, no es normal ni para un dragón…</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Gala. Respira. Aunque no lo necesites.</div>
+<p class="g-act-line">La tercera Bathory se queda atrás, junto a la puerta: <b>ELIZABETH BATHORY</b>. Alta, sin cejas, labios rojo intenso, ojeras marcadas, el pelo negro y liso como recién mojado. Lleva un largo vestido de lencería blanco amarillento. Un cigarro entre los dedos. Se detiene ante un espejo del vestíbulo: en el reflejo solo aparece el vestido, vacío, flotando. Lo mira con algo parecido al alivio.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span><span class="g-par">(sin mirarla)</span>La nueva. No fumes en mi casa.</div>
+<p class="g-act-line">Elizabeth da una calada y no contesta.</p>
+<h4 class="g-scene">Escena 3. INT. VESTÍBULO — CONTINUACIÓN</h4>
+<p class="g-act-line">Entran los <b>GÉVAUDAN</b>. <b>DAMON GÉVAUDAN</b> ocupa la puerta entera: alto, fuerte, mandíbula marcada, piel bronceada, ojos color miel. Ropa de caza de la época, chaleco de cuero, detalles ocres, guantes que esconden unas uñas demasiado largas y oscuras. Se queda quieto en el umbral y mira a Severina fijamente antes de hablar.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Severina.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Damon. Siempre tan hablador.</div>
+<p class="g-act-line">Tras él, <b>ASTRID GÉVAUDAN</b>: alta y delgada, pelo marrón larguísimo y rizado, cejas gruesas, ojos verdes intensos. Un traje de chaqueta y pantalón anticuado que oculta el vello de sus brazos. Bajo el pelo, sus orejas puntiagudas se mueven solas hacia cada sonido. Y la más joven, <b>SAERIS GÉVAUDAN</b>: menuda, delgadísima, las clavículas marcadas, cortes en las manos. Pelo castaño oscuro hasta la cintura con las puntas plateadas. Vaqueros, chaleco marrón de puntos, botas militares. Un cuchillo en la pierna y un cinto lleno de dagas que nadie le ha pedido que deje en la entrada.</p>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span><span class="g-par">(a Severina, directa)</span>¿Es verdad que el Acuerdo original está escrito con sangre?</div>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span>Saeris.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span><span class="g-par">(divertida)</span>Con tinta, pequeña. La sangre la ponen las firmas.</div>
+<p class="g-act-line">Entran las <b>ASHWORTH</b>, y con ellas un olor a agua dulce que llena el vestíbulo. Delante, <b>MARIAN ASHWORTH</b>, la mayor: vestido verde agua oscuro, sobrio; el pelo recogido con una red de pescar; anillos de concha; manos curtidas y llenas de pequeños cortes de redes. Detrás, <b>ADELA ASHWORTH</b>: piel pálida con las mejillas anaranjadas, pecas, ojos azules brillantísimos, vestido azul marino de corte sirena. Su moño negro está húmedo y dos mechones le caen sobre la cara.</p>
+<p class="g-act-line">Y la tercera, que entra con una capa larga cerrada hasta el cuello: <b>GENEVIEVE ASHWORTH</b>, «Vee». Rostro pálido y delicado, mirada intensa, el pelo oscuro y ondulado medio recogido. Al quitarse la capa aparece un vestido de novia de principios del siglo XIX, blanco envejecido, con encajes y manchas de humedad.</p>
+<p class="g-act-line">Severina se queda mirándola un instante de más.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>No te conozco.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>No. Pero yo a ti sí.</div>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span><span class="g-par">(interponiéndose, cortés y fría)</span>Nuestra hermana mediana. Ha vuelto a casa después de muchos años. Firmaremos las tres.</div>
+<p class="g-act-line">Adela inclina el cuello hacia Severina y la mira fijamente, sin parpadear. Severina aparta la vista primero.</p>
+<h4 class="g-scene">Escena 4. INT. VESTÍBULO — CONTINUACIÓN</h4>
+<p class="g-act-line">Un bastón golpea el mármol con pasos marcados: <b>WEINDER KESSLER</b>, el relojero. Aparenta setenta años y camina con la cabeza un poco agachada. Piel de porcelana surcada de cicatrices; una de ellas le parte la oreja izquierda. Ojeras, ojos rojos, el pelo peinado hacia atrás con efecto mojado. Unas gafas con un cristal roto que nunca ha cambiado. Las uñas, comidas hasta la carne. Camisa abrochada hasta arriba, pantalón de vestir, botas. Va tocando con la punta del bastón todo lo que le suena extraño.</p>
+<p class="g-act-line">A su lado camina, con pasos rígidos y mecánicos, <b>ODETTE KESSLER</b>: una muñeca de porcelana del tamaño de una niña de seis años. Mejillas sonrosadas, pecas, pestañas largísimas, dos coletas con lacitos negros. Vestido victoriano negro con detalles en cobre. Al cuello, una llave colgada de una cadena. Si alguien se acerca lo suficiente, verá que en uno de sus ojos hay un diminuto reloj con una cuenta atrás.</p>
+<p class="g-act-line">Y detrás de ambos, sin decir una palabra, <b>KATYA KESSLER</b>: altísima, la piel impoluta como la porcelana, ojos azules intensos, labios voluminosos, un gran cardado rubio. Un abrigo enorme hasta los tobillos, tacones de aguja color crema, plata y pedrería en cuello y orejas.</p>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span><span class="g-par">(demasiado alegre)</span>¡Mi hija, Severina! Ya ve que está perfectamente. Perfectamente.</div>
+<p class="g-act-line">Odette inclina la cabeza hacia Severina, sin parpadear.</p>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Usted sabe lo que soy.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Yo sé lo que sois todos, querida. Para eso me pagáis.</div>
+<p class="g-act-line">Katya da un paso hacia Severina. Solo uno. Severina deja de sonreír.</p>
+<p class="g-act-line">Por último, entran las <b>RAVENSCROFT</b>. <b>AGATHA RAVENSCROFT</b>, la gran bruja, tiene una belleza joven casi irreal, demasiado perfecta para ser cierta. Vestido morado oscuro, una cadena de llaves en la cintura. Tras ella, <b>BELLADONA RAVENSCROFT</b>: pecas, maquillaje de colores, sombras desordenadas, pelo largo castaño con mechones rubios. Corset morado, azul marino, verde, granate y dorado. Un ojo marrón; el izquierdo, azul cristalino. Va rozando con la punta de los dedos las paredes, los marcos, las barandillas.</p>
+<p class="g-act-line">Y cerrando la fila, cargando un estuche de escritura de madera que parece pesar más que ella, <b>WREN RAVENSCROFT</b>: diecisiete años, pecas, los dedos manchados de tinta, un vestido negro heredado que le queda grande. Nadie la presenta.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span><span class="g-par">(a Agatha, en voz baja)</span>¿La has traído?</div>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Lo pactado es lo pactado.</div>
+<p class="g-act-line">Severina mira a Wren de arriba abajo, como se mira un vestido que una va a ponerse. Wren baja la cabeza.</p>
+<h4 class="g-scene">Escena 5. INT. COMEDOR — NOCHE</h4>
+<p class="g-act-line">Una mesa larguísima. Candelabros, cubertería de plata, platos que nadie toca. Cada familia sentada en su tramo. Severina preside.</p>
+<p class="g-act-line">Un sirviente sirve vino tinto. Al pasar junto a Aeris, la copa se vuelca sobre su traje blanco. Una mancha roja se extiende por la pechera.</p>
+<div class="g-dlg" data-pj="AERIS"><span class="g-name">AERIS</span><span class="g-par">(levantándose, rígido)</span>Con permiso.</div>
+<p class="g-act-line">Sale hacia el servicio. Sirush no le mira; mira a Severina.</p>
+<p class="g-act-line">Al otro lado de la mesa, Gala dibuja a toda velocidad en su cuaderno las escamas que asoman bajo el cuello de Sirush. Vallora se levanta despacio.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Voy a arreglarme el maquillaje.</div>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span><span class="g-par">(sin levantar la vista)</span>No lo necesitas.</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Tú no sabes lo que necesito.</div>
+<p class="g-act-line">Elizabeth también se levanta y sale por la puerta del jardín, cigarro en mano, sin pedir permiso a nadie.</p>
+<p class="g-act-line">Saeris, aburrida, habla con Gala y con la silla vacía de Vallora. Astrid no come: mueve las orejas hacia cada conversación de la mesa, buscando algo.</p>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span><span class="g-par">(a Damon, en voz baja)</span>Alguien en esta mesa sabe quién mató a Stefan.</div>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span><span class="g-par">(se toca la mandíbula)</span>No empieces esta noche.</div>
+<p class="g-act-line">Al fondo, Belladona toca el borde de la mesa con las yemas de los dedos. Su ojo sano se ilumina un instante de azul oscuro. Se aparta como si se hubiera quemado. Busca con la mirada a Wren, que no ha probado bocado.</p>
+<h4 class="g-scene">Escena 6. INT. BIBLIOTECA — NOCHE</h4>
+<p class="g-act-line">Estanterías hasta el techo, una chimenea encendida. Severina entra con su bastón. Damon la espera junto al fuego.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>¿Me vas a decir por qué me miras así desde que has llegado?</div>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Porque sabes cosas que no deberías saber.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Sé cosas que tú no quieres que sepan los demás. Que no es lo mismo. Por ejemplo, cómo murió tu hermano en aquella cacería. Y quién estaba con él.</div>
+<p class="g-act-line">Damon se queda completamente quieto. Luego, en dos pasos, está encima de ella.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Si abres la boca esta noche, no llegarás a mañana.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span><span class="g-par">(sin moverse)</span>He vivido mucho más de lo que crees, Damon. Nadie me ha matado todavía.</div>
+<p class="g-act-line">Damon sale. En el pasillo, pegada a la pared, está Astrid. Sus orejas tiemblan. Ha oído la palabra <i>hermano</i> y no ha oído nada más.</p>
+<h4 class="g-scene">Escena 7. INT. GALERÍA ALTA — NOCHE</h4>
+<p class="g-act-line">Una galería con columnas que da al gran salón. Abajo, los sirvientes colocan una mesa con un atril vacío bajo la cúpula de cristal.</p>
+<p class="g-act-line">Marian encuentra a Severina sola.</p>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span>Esta noche se acaba nuestro trato. No más agua del lago.</div>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Entonces todos sabrán que tu querida hermana mediana nació humana. Y que nació <i>aquí</i>.</div>
+<p class="g-act-line">Marian aprieta los puños. Por los nudillos le resbalan gotas de agua.</p>
+<p class="g-act-line">Al otro extremo de la galería, escondida tras una columna, Genevieve lo ha oído todo.</p>
+<p class="g-act-line">En un rincón, Agatha toma la mano de Wren y le dibuja con el dedo un símbolo en la palma.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>El sello de rechazo. Repítelo.</div>
+<p class="g-act-line">Wren lo traza sobre su propia mano. Una vez. Perfecto.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Para qué sirve.</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>Para devolver lo que no es tuyo a su sitio.</div>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Bien. Aunque no lo usarás nunca.</div>
+<p class="g-act-line">Agatha se aleja. Belladona se acerca a Wren con prisa y le coge la muñeca. Su ojo se ilumina.</p>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>No dejes que te use. A mí me costó un ojo.</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span><span class="g-par">(muy tranquila)</span>A mí no me va a costar nada.</div>
+<p class="g-act-line">Belladona la suelta, sorprendida. Por primera vez en la noche, Wren sonríe.</p>
+<h3 class="g-act" id="acto-2">Acto II · El eclipse</h3>
+<h4 class="g-scene">Escena 8. INT. SALÓN DEL ECLIPSE — NOCHE</h4>
+<p class="g-act-line">El corazón de la mansión: un salón circular de dos alturas con una gran escalera que sube hasta la galería. En lo alto, la cúpula de cristal y, tras ella, la luna llena. Cientos de velas. En el centro, bajo la cúpula, la mesa con el atril.</p>
+<p class="g-act-line">Las seis familias se colocan alrededor, cada una en su sitio. Wren abre el estuche de escritura y saca un pergamino enrollado, atado con cintas de seis colores: bronce, granate, verde agua, ocre, cobre y morado. <b>El Acuerdo de 1826.</b> Lo deja sobre el atril y se retira junto a los candelabros.</p>
+<p class="g-act-line">Agatha se coloca junto al atril. Severina sube tres peldaños de la escalera, para que todos la vean.</p>
+<p class="g-act-line">Ausentes: Aeris sigue en el servicio; Vallora, en el tocador; Elizabeth, en el cementerio.</p>
+<div class="g-dlg" data-pj="SEVERINA"><span class="g-name">SEVERINA</span>Casas de la Noche. Hace cien años, en este mismo salón, firmasteis tres normas: no haceros la guerra, no dejaros ver por los humanos y renovar el pacto cada siglo, bajo un eclipse. Habláis de mí como «la única humana». Lo decís con desprecio. Pero sin una humana que guarde vuestro papel, os habríais comido unos a otros hace mucho.</div>
+<p class="g-par"><i>(levanta su copa)</i></p>
+<p class="g-act-line">Cuando el eclipse sea total, ninguna máscara, ningún maquillaje, ningún hechizo podrá sostenerse. Brindemos por vuestro rostro verdadero… mientras todavía podáis esconderlo.</p>
+<p class="g-act-line">Todos alzan las copas. Unos beben. Otros no. Arriba, una sombra empieza a morder la luna.</p>
+<p class="g-act-line">Agatha desenrolla el Acuerdo y empieza a leer en una lengua antigua. Las velas tiemblan.</p>
+<p class="g-act-line">Wren, junto a los candelabros, se mira la palma de la mano.</p>
+<h4 class="g-scene">Escena 9. INT. SALÓN DEL ECLIPSE — CONTINUACIÓN</h4>
+<p class="g-act-line">La sombra cubre la luna por completo. La luz del salón se vuelve roja. <b>Los invitados se transforman.</b></p>
+<p class="g-note"><i>Nota de producción: plano secuencia circular alrededor del salón; cada transformación dura entre 3 y 5 segundos y se encadena con la siguiente.</i></p>
+<p class="g-act-line">A <b>SIRUSH</b> se le alarga el rostro y se vuelve anguloso. La piel envejece y se cubre de escamas; las pupilas se vuelven de reptil y los dientes, puntiagudos. El pelo negro se vuelve naranja y le brotan dos cuernos largos hacia atrás. Su cuerpo crece; la espalda se cubre de escamas, se le marcan las vértebras y le nace una cola. Los dedos se alargan, huesudos, retorcidos, con garras. El traje se rompe y los jirones se funden con las escamas. Solo la cicatriz del labio superior sigue igual.</p>
+<p class="g-act-line">Las orejas de <b>ASTRID</b> se alargan. El hocico le crece, aparecen los colmillos, los ojos pasan de verde a amarillo y el pelaje le cubre la cara. Su cuerpo se ensancha y se vuelve musculoso; la chaqueta se desgarra.</p>
+<p class="g-act-line">A <b>DAMON</b> el pelo oscuro le cubre los pómulos, la mandíbula y el cuello. Las pupilas se marcan, los dientes se alargan y las garras rompen los guantes. Las mangas se rasgan; el cinturón de cuero aguanta.</p>
+<p class="g-act-line">A <b>SAERIS</b> se le oscurece el rostro, la nariz se convierte en hocico de lobo y le salen unos colmillos grandes. Se curva hacia delante. Sus manos se convierten en garras, el pelo se le riza y le brotan dos orejas en lo alto de la cabeza. Las puntas plateadas brillan con la luz roja.</p>
+<p class="g-act-line"><b>GENEVIEVE</b> se vuelve más pálida y azulada; los labios, violetas; la mirada, vacía. El pelo empapado se le pega a la cara y al cuello, con algas entre los mechones. Del bajo del vestido de novia empieza a gotear agua turbia, que forma un charco en el suelo. Los bajos aparecen desgarrados y llenos de barro.</p>
+<p class="g-act-line">A <b>ADELA</b> se le va todo el maquillaje. Los pómulos se le marcan en azul oscuro, las orejas se vuelven puntiagudas y en el cuello se le abren unas branquias. Le salen aletas en brazos y piernas y se le marcan en la piel las cicatrices de redes de pesca. Le cae agua por la boca. El vestido azul marino se deshace en algas.</p>
+<p class="g-act-line">A <b>MARIAN</b> la piel se le vuelve verdosa y se le abren branquias bajo la mandíbula. Los juncos le brotan entre el pelo, que se suelta de la red. El vestido se empapa y pesa como si acabara de salir del lago.</p>
+<p class="g-act-line">La porcelana de <b>ODETTE</b> se craquela y se desprenden trozos de la mejilla, que dejan ver una superficie oscura debajo. El ojo del contador se convierte en un reloj completo con el cristal estallado; del otro le cae una lágrima. Bajo el vestido descosido asoman engranajes.</p>
+<p class="g-act-line">La piel de <b>WEINDER</b> se agrieta por las costuras de las cicatrices. Se le marcan las venas desde el cuello, los ojos se le ponen enormes y rojos, y empieza a sudar. Se arranca los primeros botones de la camisa como si le faltara el aire. Agarra el bastón por el extremo, como un arma.</p>
+<p class="g-act-line">Y <b>KATYA</b>. Su rostro se rompe. La comisura izquierda de la boca se le desgarra hasta dejar la mandíbula a la vista, y el ojo de ese lado se convierte en un agujero negro sin párpado. La otra mitad de la cara se agujerea, unida por hilos finos de piel de los que sale humo morado. Los ojos se le vuelven rojos. El cardado rubio desaparece y queda una melena color ceniza, lisa y larga. El abrigo, los tacones y las joyas caen al suelo: dentro solo hay harapos viejos y humo morado.</p>
+<p class="g-act-line"><b>BELLADONA</b> envejece de golpe. Arrugas, manchas, el pelo blanco y desigual, las manos nudosas. Su ojo izquierdo queda completamente blanco, rodeado por la cicatriz de una quemadura. El ojo sano se le ilumina de azul oscuro.</p>
+<p class="g-act-line"><b>AGATHA</b> deja de leer. Su belleza se resquebraja como pintura vieja. Cuatro siglos de golpe: la piel como corteza seca, el pelo blanco hasta el suelo, uñas negras y larguísimas, los ojos velados. Sigue en pie.</p>
+<p class="g-act-line"><b>GALA</b> se encoge y se repliega sobre sí misma. El rostro se le arruga y se le achican los ojos; los dientes, amarillos y gastados; el pelo, totalmente blanco. Se le ven todas las cicatrices de sus experimentos. No deja de dibujar.</p>
+<p class="g-act-line">En lo alto de la escalera, <b>SEVERINA</b> no cambia. Solo sonríe. Y mira hacia los candelabros. Hacia <b>WREN</b>.</p>
+<p class="g-act-line">A Wren se le encanece un mechón. Luego otro. Unas runas negras le suben por los brazos como tinta derramada. Sus ojos se vuelven completamente negros.</p>
+<p class="g-act-line">Wren cierra el puño.</p>
+<h4 class="g-scene">Escena 10. INT. SALÓN DEL ECLIPSE — CONTINUACIÓN</h4>
+<p class="g-act-line"><b>Todas las velas se apagan a la vez.</b></p>
+<p class="g-act-line">Oscuridad total. Solo quedan las luces de los cuerpos: el humo morado de Katya, los ojos azules de Adela, el ojo de Belladona, las pupilas amarillas de los Gévaudan.</p>
+<p class="g-note"><i>Nota de producción: la escena dura 40 segundos y se rueda casi a ciegas. El espectador solo reconoce a los personajes por su luz y por el sonido.</i></p>
+<p class="g-act-line">SONIDOS, en este orden:</p>
+<p class="g-act-line">Un solo plano corto: el ojo-reloj de Odette, inmóvil en una esquina. Su cuenta atrás avanza. Ella mueve los labios, contando.</p>
+<p class="g-act-line">Otro plano: Adela, en la ventana, ve con sus ojos brillantes una silueta pequeña que se mueve entre los candelabros. Se agarra a la cortina, se le doblan las piernas y se desmaya.</p>
+<h4 class="g-scene">Escena 11. INT. SALÓN DEL ECLIPSE — CONTINUACIÓN</h4>
+<p class="g-act-line">Las velas se encienden solas, una a una, desde el fondo del salón hasta la escalera.</p>
+<p class="g-act-line">Cuadro general. Todos están en un sitio distinto al de hace un minuto.</p>
+<p class="g-act-line">Al pie de la escalera yace <b>SEVERINA BLACKWOOD</b>. Tiene los ojos abiertos. En la mejilla izquierda, sobre el polvo de oro, una marca negra: un símbolo circular, como grabado a fuego.</p>
+<p class="g-act-line">Sirush está a unos metros, como si nada hubiera pasado. Katya está de pie junto a Odette, con humo saliendo de sus manos. Genevieve está en lo alto de la escalera, agarrada a la columna. Damon y Astrid, a mitad de los peldaños. Wren, sentada en el suelo junto a los candelabros, temblando, con un mechón blanco sobre la cara. Belladona corre hacia Adela, desmayada.</p>
+<p class="g-act-line">Marian mira el atril.</p>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span>El Acuerdo. No está.</div>
+<p class="g-act-line">Todos se giran. El atril está vacío. Las seis cintas de colores están en el suelo, cortadas.</p>
+<p class="g-act-line">Entran corriendo Aeris, con la camisa a medio abrochar y la pechera manchada de vino, ya transformado: escamas ensangrentadas, cuernos agrietados, garras. Después Vallora, con el maquillaje a medio arreglar y la boca llena de colmillos.</p>
+<p class="g-act-line">Gala se arrodilla junto al cuerpo. Habla muy deprisa.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>No tiene pulso. La caída no la ha matado: no hay sangre suficiente. La piel… <i>(la toca)</i> la piel está envejeciendo. Mirad. Mirad las manos.</div>
+<p class="g-act-line">Las manos de Severina se arrugan a toda velocidad. Las uñas se oscurecen. El polvo de oro de la cara se agrieta como barro seco.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>Este cuerpo tiene sesenta años. Pero lo que hay dentro tiene muchos más.</div>
+<p class="g-act-line">Damon va hacia la puerta principal. Tira del pomo. No se mueve. Lo intenta con las garras. La madera ni se araña.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span><span class="g-par">(con voz de cuatro siglos)</span>No se abrirá hasta el amanecer. Es la ley del Acuerdo. Si se rompe durante el eclipse, nadie sale.</div>
+<p class="g-act-line">Se abre de golpe la puerta del jardín. Entra Elizabeth, empapada de niebla, la nariz convertida en hocico de murciélago, lágrimas de sangre en las mejillas y una mancha de sangre enorme en el lado izquierdo del pecho. Mira el cuerpo. Mira a todos.</p>
+<div class="g-dlg" data-pj="ELIZABETH"><span class="g-name">ELIZABETH</span>La puerta de la cripta está abierta. Hay algo ahí abajo. Y está vivo.</div>
+<p class="g-act-line">El reloj del salón da las doce.</p>
+<h3 class="g-act" id="acto-3">Acto III · Los interrogatorios</h3>
+<h4 class="g-scene">Escena 12. INT. BIBLIOTECA — NOCHE</h4>
+<p class="g-act-line">Las seis familias, ya en su forma verdadera, se apretujan entre las estanterías. El cuerpo de Severina se ha quedado en el salón, cubierto con una cortina. Elizabeth vigila la puerta de la cripta con Saeris.</p>
+<p class="g-act-line">Vallora se sienta en el sillón frente a la chimenea. Se mueve muy despacio. Nadie se atreve a quitarle el sitio.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Nadie sale hasta el amanecer. Bien. Entonces nadie miente hasta el amanecer. Cada casa hablará. Gala, tus notas.</div>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span><span class="g-par">(abre el cuaderno; habla a toda velocidad)</span>He dibujado a los Várkonyi justo antes del apagón y justo después. Tengo posiciones. Tengo distancias. Tengo una marca en la mejilla que no es una herida. Es un dibujo.</div>
+<p class="g-act-line">Katya da un paso al frente. El humo morado le sale de las manos, de la boca rota. Habla con un acento del norte muy marcado, como si cada palabra le costara.</p>
+<div class="g-dlg" data-pj="KATYA"><span class="g-name">KATYA</span>Fui yo.</div>
+<p class="g-act-line">Silencio.</p>
+<div class="g-dlg" data-pj="KATYA"><span class="g-name">KATYA</span>El poder… se escapó. Busqué a Odette en la oscuridad. Algo me rozó y golpeé. Golpeé hacia la escalera.</div>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span><span class="g-par">(golpeando el suelo con el bastón)</span>¡No le hagáis caso! Es una creación. No sabe lo que dice. Solo obedece.</div>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span><span class="g-par">(desde un rincón, inclinando la cabeza, sin parpadear)</span>El humo golpeó la barandilla. No a ella. Yo lo vi. Cuando el humo llegó, ella ya estaba cayendo.</div>
+<p class="g-act-line">Todos miran a la muñeca. Ella mira a su padre.</p>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Y no voy a decir nada más mientras él esté delante.</div>
+<p class="g-act-line">Vallora hace un gesto. Damon coge a Weinder del brazo y lo saca al pasillo. Katya se queda junto a la puerta, vigilándolo.</p>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Severina sabía lo que mi padre le hizo a mi madre. La mató, en una pelea, cuando yo tenía cinco años. Después se olvidó de mí. Me morí esperando a que se acordara. Y cuando se acordó, me metió aquí dentro.</div>
+<p class="g-par"><i>(toca la llave que lleva al cuello)</i></p>
+<p class="g-act-line">Si yo quisiera matar a alguien esta noche, no sería a Severina.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Te ha dicho tu padre qué pasa cuando tu reloj llegue a cero?</div>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>No lo sabe. Nadie lo sabe.</div>
+<p class="g-act-line">En el pasillo, a través de la puerta entreabierta, Weinder lo ha oído todo. Se apoya en la pared. Las grietas de su cara sudan.</p>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span><span class="g-par">(para sí)</span>La traje para que vieran que estaba bien. Que estaba bien.</div>
+<p class="g-act-line">Damon, que lo vigila desde el otro lado del pasillo, no dice nada durante un rato.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>¿Es verdad lo de su madre?</div>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span>Liverpool, 1856. A los ocho años ya arreglaba relojes catorce horas al día en un sótano. Si se paraba uno, me pegaban. Así aprendí dos cosas: que todo lo roto se puede arreglar. Y a pegar.</div>
+<p class="g-par"><i>(se muerde una uña que ya no tiene)</i></p>
+<p class="g-act-line">Cada vez que se renueva ese papel, me sale de dentro el que busca pelea. Aquella noche ella quería irse. Le levanté la mano para que se quedara. No volvió a levantarse.</p>
+<p class="g-par"><i>(se toca la cicatriz de la oreja)</i></p>
+<p class="g-act-line">Esto me lo hizo Odette. La primera noche que abrió los ojos dentro de la muñeca. Me lo merecía.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span><span class="g-par">(se toca la mandíbula)</span>Todos llevamos a alguien en la cara.</div>
+<h4 class="g-scene">Escena 13. INT. BIBLIOTECA — CONTINUACIÓN</h4>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span>Antes de la ceremonia, Damon estaba aquí con ella. Les oí. Ella dijo «tu hermano».</div>
+<p class="g-act-line">Damon se queda completamente quieto. Se toca la mandíbula.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Y bien, cazador?</div>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>La amenacé. Sí. Le dije que si abría la boca no llegaría a mañana. Pero cuando salí de aquí estaba viva. Y en el apagón yo estaba en la escalera, con Astrid. Ella puede decirlo.</div>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span>Estabas a mi lado. Hasta que dejaste de estarlo.</div>
+<p class="g-act-line">Saeris ha entrado sin que nadie la oiga. Tiene el hocico manchado de niebla y el cuchillo en la mano.</p>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span>¿Qué sabía Severina de mi padre?</div>
+<p class="g-act-line">Damon mira a la niña. A Astrid. Cierra los ojos.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Stefan perdió el control durante una cacería. Era la primera luna llena del año. Ya no era él. Iba a matar a un niño del pueblo. Le disparé. <i>(pausa)</i> Yo maté a tu padre. Y llevo veinte años gobernando su casa y mirando a su mujer a la cara.</div>
+<p class="g-act-line">Astrid suelta un aullido que hace temblar los cristales de la chimenea. Saeris no se mueve. Las puntas plateadas de su pelo brillan.</p>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span><span class="g-par">(muy bajo)</span>Cada noche le pido a la luna que cure a mi madre. Y la cura estaba en casa.</div>
+<p class="g-act-line">Sale de la biblioteca. Nadie la detiene.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Un asesino confeso. Pero no de Severina.</div>
+<h4 class="g-scene">Escena 14. INT. BIBLIOTECA — CONTINUACIÓN</h4>
+<p class="g-act-line">Gala abre su cuaderno sobre la mesa y gira dos dibujos hacia todos. En el primero, Sirush está justo detrás de Severina, en el tercer peldaño. En el segundo, tras el apagón, está seis metros a la izquierda, junto al atril.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>Nadie camina seis metros en la oscuridad para quedarse quieto, Sirush. Se camina hacia algo.</div>
+<p class="g-act-line">Sirush se frota las manos llenas de escamas.</p>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Fui a por el Acuerdo. Es verdad. Vine a esta casa a robarlo. Pero cuando llegué al atril, las cintas ya estaban cortadas. Y el pergamino ya no estaba.</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Para qué querías un papel?</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Porque ese papel me robó la infancia. Yo nací en 1326, en este páramo, en un pueblo que se llamaba igual que esta casa. Mis padres me vendieron a otra familia. ¿Sabéis quién les compró la idea? Una mujer joven, rubia, que les prometió más años de vida a cambio de mí.</div>
+<p class="g-par"><i>(señala hacia el salón)</i></p>
+<p class="g-act-line">Tenía la misma mirada que esa. Seiscientos años, y la misma mirada.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span><span class="g-par">(muy deprisa)</span>No puede ser la misma mujer. Severina era humana.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Eso es lo que ella quería que creyéramos.</div>
+<p class="g-act-line">Aeris, junto a la ventana, no ha dejado de mirar a su abuela. Tiene parte de la cara inmóvil.</p>
+<div class="g-dlg" data-pj="AERIS"><span class="g-name">AERIS</span>Tú también has robado. <i>(se gira; se baja la camisa por el hombro y enseña una cicatriz larga en la espalda)</i> Me cortaste un ala porque quería irme del castillo.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Para que no te fueras como se fueron todos.</div>
+<div class="g-dlg" data-pj="AERIS"><span class="g-name">AERIS</span>Estaba en el servicio limpiando tu vino cuando se apagaron las velas, abuela. La condesa estaba en el tocador de al lado. Nos vimos al salir. Yo no he matado a nadie. Esta noche.</div>
+<p class="g-act-line">Vallora asiente despacio: la coartada es suya también.</p>
+<h4 class="g-scene">Escena 15. INT. BIBLIOTECA — CONTINUACIÓN</h4>
+<p class="g-act-line">Adela, despierta, envuelta en una manta empapada, tartamudea. Tiene los dedos en carne viva de arrancarse la piel.</p>
+<div class="g-dlg" data-pj="ADELA"><span class="g-name">ADELA</span>Yo… yo vi m-movimiento en la escalera. Arriba. Alguien escondido detrás de una columna.</div>
+<p class="g-act-line">Todos se giran hacia Genevieve. El vestido de novia sigue goteando sobre la alfombra.</p>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Era yo.</div>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span>Vee.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>No, Marian. Ya basta de esconderse.</div>
+<p class="g-par"><i>(da un paso al centro)</i></p>
+<p class="g-act-line">Me llamo Genevieve Blackwood. Nací en esta casa en 1810. Me educaron para guardar ese Acuerdo y para entrenar a la siguiente. A los veinte años me enamoré de un Várkonyi. Mi familia lo hizo desaparecer. Y yo me fui al lago con mi vestido de novia puesto.</p>
+<p class="g-par"><i>(señala a Marian y a Adela)</i></p>
+<p class="g-act-line">Ellas me sacaron del agua.</p>
+<p class="g-act-line">Un murmullo recorre la biblioteca. Una Blackwood entre ellos.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Y qué hacías en la escalera?</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Esperar. Quería que me dijera dónde está él. Vivo o muerto. Me daba igual cuál de las dos cosas, solo quería saberlo. Cuando volvió la luz, ya estaba abajo.</div>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span><span class="g-par">(sin poder contenerse)</span>Y yo le pagaba para que no lo contara. Agua del lago, cada diez años. Por eso Severina no envejecía como una humana. Esta noche iba a dejar de pagar.</div>
+<div class="g-dlg" data-pj="ADELA"><span class="g-name">ADELA</span><span class="g-par">(a Marian, dolida)</span>¿Y no me lo dijiste?</div>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span>Porque eras tú la que tenía que vivir tranquila.</div>
+<h4 class="g-scene">Escena 16. INT. BIBLIOTECA — CONTINUACIÓN</h4>
+<p class="g-act-line">Vallora se levanta por primera vez en toda la noche.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Ya que estamos confesando. Yo la envidiaba. Una humana que podía salir al sol, que podía irse cuando quisiera, que no debía nada a nadie. Mi marido y mi hermano me mataron en un descampado para que su secreto muriera conmigo. Gala me trajo de vuelta sin preguntarme. Llevo doscientos cincuenta años sin ser libre. <i>(pausa)</i> No la maté. Pero no pienso llorarla.</div>
+<p class="g-act-line">Elizabeth entra desde el pasillo, con el cigarro apagado.</p>
+<div class="g-dlg" data-pj="ELIZABETH"><span class="g-name">ELIZABETH</span>Tu hermano, condesa. El que te mató. Es mi marido.</div>
+<p class="g-act-line">Vallora la mira despacio.</p>
+<div class="g-dlg" data-pj="ELIZABETH"><span class="g-name">ELIZABETH</span>Mi madre me vendió a vuestra familia el día que cumplí veintiún años. Tu hermano me arrancó el corazón esa misma noche. Y ahora soy vuestra. <i>(se toca la mancha de sangre del pecho)</i> Estaba en el cementerio porque no soporto los espejos de esta casa. Por eso vi la puerta de la cripta abierta. Y oí cadenas.</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Bienvenida a la familia, entonces. Nadie aquí eligió estar.</div>
+<h4 class="g-scene">Escena 17. INT. CRIPTA DE LA MANSIÓN — NOCHE</h4>
+<p class="g-act-line">Unas escaleras de piedra bajan a la oscuridad. Damon delante, con una antorcha. Detrás Elizabeth, Sirush, Genevieve, Gala y Saeris, que ha vuelto con el cuchillo en la mano y los ojos rojos.</p>
+<p class="g-act-line">Al fondo de la cripta: argollas en la pared, cadenas rotas y, en una estantería, decenas de frascos de cristal con un líquido oscuro. Cada frasco lleva una etiqueta con un año: <i>1831</i>, <i>1832</i>, <i>1833</i>… hasta <i>1925</i>.</p>
+<p class="g-act-line">Gala coge uno, lo destapa y lo huele.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>Sangre. De dragón.</div>
+<p class="g-act-line">Algo se mueve en la esquina. Un hombre se levanta despacio, apoyándose en la pared: <b>LÁZÁR VÁRKONYI</b>. Piel cetrina, como si no hubiera visto el sol en un siglo. Escamas de bronce apagadas. Marcas de grilletes en las muñecas y en el cuello. Viste un traje de 1830, hecho jirones. Tras el eclipse: dos alas atrofiadas en la espalda, cuernos partidos y escamas negras por los brazos.</p>
+<p class="g-act-line">Sirush se detiene en seco.</p>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Lázár.</div>
+<div class="g-dlg" data-pj="LÁZÁR"><span class="g-name">LÁZÁR</span><span class="g-par">(con la voz rota de no usarla)</span>Madre. Has tardado casi cien años en bajar a buscarme.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Te di por muerto.</div>
+<div class="g-dlg" data-pj="LÁZÁR"><span class="g-name">LÁZÁR</span>Ella quería que todos lo hicierais.</div>
+<p class="g-par"><i>(mira los frascos)</i></p>
+<p class="g-act-line">Cada año una botella. Así se mantenía joven. Las cadenas se rompieron solas hace una hora. Justo a medianoche. Supe que había muerto antes de que nadie me lo dijera.</p>
+<p class="g-act-line">Entonces ve a Genevieve, empapada, con el vestido de novia. Se queda sin aire.</p>
+<div class="g-dlg" data-pj="LÁZÁR"><span class="g-name">LÁZÁR</span>Vee.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Me dijeron que no existías.</div>
+<div class="g-dlg" data-pj="LÁZÁR"><span class="g-name">LÁZÁR</span>A mí me dijeron que te habías ahogado.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Es que me ahogué.</div>
+<p class="g-act-line">Se acercan. Él levanta una mano llena de escamas negras. Ella la toma con sus dedos arrugados por el agua. Nadie en la cripta dice nada.</p>
+<p class="g-act-line">Saeris rompe el silencio, mirando la estantería de frascos.</p>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span>Si él estaba encadenado y Damon estaba en la escalera… ¿quién nos queda?</div>
+<p class="g-act-line">Gala vuelve a abrir el cuaderno. Mira el dibujo de la marca de la mejilla de Severina. Luego mira hacia arriba, hacia el salón.</p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>Nos quedan las brujas.</div>
+<h3 class="g-act" id="acto-4">Acto IV · La revelación</h3>
+<h4 class="g-scene">Escena 18. INT. SALÓN DEL ECLIPSE — NOCHE</h4>
+<p class="g-act-line">Todos vuelven al salón. Lázár sube apoyado en Sirush y en Genevieve; las familias se apartan a su paso. La luna sigue cubierta y la luz, roja.</p>
+<p class="g-act-line">Gala retira la cortina que cubre el cuerpo. Severina ya no aparenta sesenta años: la piel se le ha vuelto gris y fina como papel, y el pelo, blanco y quebradizo. En la mejilla, el símbolo negro sigue intacto.</p>
+<p class="g-act-line">Gala pone su cuaderno junto a la cara del cadáver. En la página, el mismo símbolo, dibujado hace dos semanas en otra libreta: <i>Sellos Ravenscroft, copiados de la biblioteca de Agatha.</i></p>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span>Círculo, tres cortes, un punto en el centro. Es un sello de rechazo. Vuestro.</div>
+<p class="g-act-line">Todos se giran hacia Agatha. Ella no se mueve. Cuatro siglos de cara arrugada, ojos velados.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Es mío, sí. Y no lo he usado. Un sello de rechazo no mata a nadie. Devuelve lo que no es tuyo a su sitio. Si mató a Severina… es porque lo que llevaba dentro no era suyo.</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Y quién más lo conoce?</div>
+<p class="g-act-line">Agatha no contesta. Belladona se adelanta, apoyándose en la barandilla con sus manos viejas.</p>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>Déjame tocarla.</div>
+<p class="g-act-line">Se arrodilla junto a Severina y le coge la mano. Su ojo sano se enciende de azul oscuro.</p>
+<p class="g-act-line"><i>Inserto. VISIÓN DE BELLADONA, en blanco y negro y sin sonido: en la oscuridad, una mano pequeña, con los dedos manchados de tinta, traza un círculo sobre la mejilla de Severina. Tres cortes. Un punto. Severina abre la boca. Sus labios dicen una sola palabra:</i> «Nieta».</p>
+<p class="g-act-line">Belladona suelta la mano como si quemara.</p>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>Unas manos manchadas de tinta. Y ella la llamó <i>nieta</i>.</div>
+<p class="g-act-line">Adela se tapa la boca.</p>
+<div class="g-dlg" data-pj="ADELA"><span class="g-name">ADELA</span>Yo… yo también la vi. Junto a los candelabros. Era b-bajita.</div>
+<p class="g-act-line">Odette sale de su rincón. Se coloca en el centro del salón, pequeña, rota, con los engranajes a la vista.</p>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Yo conté los pasos. Mi reloj no se equivoca. Once pasos cortos desde los candelabros hasta la escalera. Y once de vuelta. Ligeros. Como los de una niña.</div>
+<p class="g-act-line">Uno a uno, todos los ojos del salón se vuelven hacia los candelabros.</p>
+<p class="g-act-line">Allí, sentada en el suelo desde que volvió la luz, con el estuche de escritura en el regazo y el pelo cada vez más blanco, está <b>WREN</b>.</p>
+<p class="g-act-line">Se mira las manos, manchadas de tinta. Después levanta la vista. Ya no tiembla.</p>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>No era su nieta. Era su bisnieta.</div>
+<h4 class="g-scene">Escena 19. INT. SALÓN DEL ECLIPSE — CONTINUACIÓN</h4>
+<p class="g-act-line">Wren abre el estuche de escritura. Levanta un doble fondo. Debajo está el Acuerdo de 1826, sin sus cintas. Se pone en pie y lo desenrolla bajo la cúpula.</p>
+<p class="g-act-line">Con la luz roja del eclipse aparecen en el pergamino unas líneas que antes no estaban: una tinta oscura, casi viva, en los márgenes.</p>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>No me llamo Wren Ravenscroft. Me llamo Wren Blackwood. Mi madre murió al tenerme y mi bisabuela me entregó a Agatha para que aprendiera la magia de los sellos. Me dijo que un día yo guardaría el Acuerdo. Que era un honor.</div>
+<p class="g-par"><i>(lee del margen del pergamino)</i></p>
+<p class="g-act-line">«Cláusula de la guardiana. Bajo el eclipse de renovación, la guardiana pasará a la sangre más joven de su linaje, para que el Acuerdo nunca quede sin custodia».</p>
+<p class="g-par"><i>(levanta la vista)</i></p>
+<p class="g-act-line">No significa que yo vaya a guardar el Acuerdo. Significa que ella iba a meterse dentro de mí. Y que yo iba a desaparecer.</p>
+<p class="g-act-line">Silencio absoluto.</p>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>No era humana. O sí, al principio. Lleva siglos saltando de un cuerpo a otro de su familia, cada cien años, cada eclipse. Entre salto y salto se mantenía joven con lo que os sacaba a vosotros: la sangre de un dragón encadenado, el agua de un lago, la infancia de una niña vendida.</div>
+<p class="g-par"><i>(a Sirush)</i></p>
+<p class="g-act-line">La mujer rubia que compró a tu familia en 1326 era ella. En otro cuerpo.</p>
+<p class="g-act-line">Sirush se lleva las manos a la cara. Las garras le tiemblan.</p>
+<p class="g-act-line">Genevieve da un paso adelante. Le cuesta respirar.</p>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Me entrenaron desde los diez años. Me prohibieron casarme. Me quitaron a Lázár. Yo no iba a ser la guardiana.</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>Ibas a ser su siguiente cuerpo. Te ahogaste antes del eclipse de 1826, y tuvo que esperar otros cien años. Me esperó a mí.</div>
+<p class="g-act-line">Lázár rodea a Genevieve con un brazo lleno de escamas negras. Ella no se aparta.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>¿Qué hiciste exactamente, niña?</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>Cuando la luna se tapó, ella empezó el ritual desde la escalera. Sentí cómo me sacaba los años. <i>(se toca un mechón blanco)</i> Por eso tengo esto. Apagué las velas para que nadie me viera. Fui hasta ella: once pasos. Le hice el sello de rechazo en la cara, el que me enseñó Agatha. El sello devuelve lo que no es tuyo a su sitio. Y devolvió su alma a su verdadera edad. Seiscientos años de golpe, en un cuerpo de sesenta. Se cayó por la escalera, pero ya estaba muerta.</div>
+<p class="g-par"><i>(mira el pergamino)</i></p>
+<p class="g-act-line">Después corté las cintas y me llevé el Acuerdo, para que nadie volviera a usar esta cláusula.</p>
+<p class="g-act-line">Katya da un paso hacia Wren. El humo morado se le apaga de las manos.</p>
+<div class="g-dlg" data-pj="KATYA"><span class="g-name">KATYA</span>Entonces yo… no fui.</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>Tú le diste a la barandilla. Me rozaste el pelo.</div>
+<p class="g-act-line">Belladona se gira hacia Agatha, con el ojo ciego y el sano clavados en ella.</p>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>¿Lo sabías?</div>
+<p class="g-act-line">Agatha tarda en contestar.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Yo redacté el Acuerdo. Claro que lo sabía. Severina me pagaba en años. Los de esta noche iban a ser… <i>(mira a Wren)</i> …los que le sobraran a ella.</div>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>Me quemaste un ojo para que fuera la mejor vidente. Y a ella la ibas a vender entera.</div>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Y ella me ha robado la lección. Es mejor alumna de lo que fuiste tú.</div>
+<p class="g-act-line">Damon avanza hacia Wren, con las garras abiertas.</p>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Ha matado a la guardiana del Acuerdo. Las normas son las normas.</div>
+<p class="g-act-line">Katya se interpone. El humo morado vuelve a sus manos. Saeris se pone a su lado, con el cuchillo. Y detrás de ellas, despacio, Elizabeth.</p>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span>Tú mataste a mi padre, tío. No eres quién para hablar de normas.</div>
+<p class="g-act-line">Vallora levanta una mano. Todo el salón se detiene.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Nadie toca a la niña. Las puertas se abrirán al amanecer. Al amanecer decidiremos las seis casas.</div>
+<p class="g-act-line">Arriba, en la cúpula, la sombra empieza a apartarse de la luna.</p>
+<h3 class="g-act" id="acto-5">Acto V · El amanecer</h3>
+<h4 class="g-scene">Escena 20. INT. SALÓN DEL ECLIPSE — AMANECER</h4>
+<p class="g-act-line">La luna ya está limpia y empieza a palidecer. Por la cúpula entra una luz gris azulada que se mezcla con el último rojo del eclipse. Las velas se han consumido hasta el cabo.</p>
+<p class="g-act-line">Las seis familias forman un círculo alrededor del atril, como al principio de la noche. Ya nadie ocupa el sitio que tenía asignado: Lázár está con las Ashworth; Saeris, con Katya y Odette; Elizabeth, sola, a un paso de los Bathory. Weinder ha vuelto del pasillo y se queda al fondo, apoyado en el bastón, sin acercarse a su hija.</p>
+<p class="g-act-line">Wren está en el centro, con el Acuerdo enrollado entre las manos. Detrás de ella, Belladona.</p>
+<p class="g-note"><i>Nota de producción: los personajes siguen en estado B, pero el eclipse se está retirando. Desgaste máximo de la noche: maquillaje corrido, sangre seca, pelo apelmazado y vestuario roto. Es la escena más &quot;sucia&quot; de la película.</i></p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>La norma dice que quien mata a la guardiana paga con su vida. La norma la escribió ella. <i>(pausa)</i> Votaremos por casas. Una voz cada una.</div>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span><span class="g-par">(sin dudar)</span>Várkonyi dice que la niña nos ha devuelto lo que nos robaron. Un hijo. Seis siglos. Salvadora.</div>
+<p class="g-act-line">Aeris la mira, sorprendido de que haya hablado por los dos sin preguntarle. Luego asiente.</p>
+<div class="g-dlg" data-pj="AERIS"><span class="g-name">AERIS</span>Salvadora.</div>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span>Ashworth. <i>(mira a Genevieve)</i> Salvadora.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Salvadora.</div>
+<div class="g-dlg" data-pj="ADELA"><span class="g-name">ADELA</span><span class="g-par">(muy bajo)</span>S-salvadora.</div>
+<div class="g-dlg" data-pj="DAMON"><span class="g-name">DAMON</span>Gévaudan…</div>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span><span class="g-par">(cortándole)</span>Gévaudan ya no habla por tu boca, Damon.</div>
+<p class="g-act-line">Damon la mira. Astrid no aparta los ojos amarillos. Él da un paso atrás.</p>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span>Salvadora.</div>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span>Salvadora.</div>
+<p class="g-act-line">Todos miran a los Kessler. Weinder abre la boca, pero es Katya quien habla, con su acento del norte, despacio.</p>
+<div class="g-dlg" data-pj="KATYA"><span class="g-name">KATYA</span>Kessler. Salvadora.</div>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span>¡Katya no vota! Es una…</div>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Esta noche sí, papá.</div>
+<p class="g-act-line">Weinder se calla. Por primera vez en la película, parece viejo de verdad.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Ravenscroft.</div>
+<p class="g-act-line">Agatha se apoya en la barandilla. Habla sin mirar a nadie.</p>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>Ravenscroft se abstiene.</div>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span>Ravenscroft dice salvadora. Agatha ya no habla por la casa.</div>
+<p class="g-act-line">Vallora se vuelve hacia Gala y hacia Elizabeth.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Bathory… <i>(una sonrisa muy lenta, la primera)</i> Bathory también sabe lo que es que te usen. Salvadora.</div>
+<p class="g-act-line">Wren no se mueve. Le tiembla la barbilla, solo un instante.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Entonces queda el papel.</div>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>Sin guardiana no hay pacto.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Con esa guardiana tampoco lo había.</div>
+<p class="g-act-line">Genevieve se acerca a Wren y tiende la mano. Wren duda. Le entrega el Acuerdo. Genevieve, la última Blackwood que lo custodió, lo acerca a una de las pocas velas que siguen encendidas. El pergamino prende por la esquina. La tinta oscura de la cláusula se retuerce como si estuviera viva y se apaga.</p>
+<p class="g-act-line">Nadie lo detiene.</p>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Un nuevo pacto. Sin papel y sin guardiana humana. Las seis casas responden ante las seis casas. Si una cae, las demás la sostienen. Si una traiciona, las demás la juzgan.</div>
+<div class="g-dlg" data-pj="GALA"><span class="g-name">GALA</span><span class="g-par">(muy deprisa, escribiendo)</span>Tengo que anotarlo. Alguien tiene que anotarlo. No en sangre. En lápiz.</div>
+<p class="g-act-line">Unas risas, pocas y cansadas, recorren el salón.</p>
+<p class="g-act-line">Wren se gira hacia Agatha.</p>
+<div class="g-dlg" data-pj="WREN"><span class="g-name">WREN</span>No vuelvo contigo.</div>
+<div class="g-dlg" data-pj="AGATHA"><span class="g-name">AGATHA</span>No te lo he pedido.</div>
+<div class="g-dlg" data-pj="BELLADONA"><span class="g-name">BELLADONA</span><span class="g-par">(a Wren)</span>Viene conmigo. Mi casa está lejos y llena de cosas que no tienen futuro. Te gustará.</div>
+<p class="g-act-line">Agatha sigue apoyada en la barandilla. Esta noche no habrá años nuevos para ella, ni esta noche ni ninguna otra.</p>
+<h4 class="g-scene">Escena 21. EXT. ESCALINATA DE LA MANSIÓN — AMANECER</h4>
+<p class="g-act-line">La puerta principal se abre sola, sin ruido. Una luz blanca y fría entra en el vestíbulo.</p>
+<p class="g-act-line">Sale el sol sobre el páramo. A medida que la luz toca a cada personaje, su forma verdadera se retira. Pero no del todo.</p>
+<p class="g-note"><i>Nota de producción: cada personaje vuelve a su estado A, pero con una secuela visible de la noche (ver el Anexo, columna &quot;FX y continuidad&quot;). La secuela tiene que ser pequeña y fácil de leer en plano medio.</i></p>
+<p class="g-act-line">Una serie de despedidas en la escalinata, en planos cortos.</p>
+<p class="g-act-line"><b>LOS GÉVAUDAN.</b> Astrid baja primero, con la chaqueta rota echada sobre los hombros. Saeris la sigue, con el cuchillo guardado en la bota. Damon sale el último y se queda en el umbral. Astrid se vuelve.</p>
+<div class="g-dlg" data-pj="ASTRID"><span class="g-name">ASTRID</span>La casa de Stefan la lleva su hija desde hoy.</div>
+<div class="g-dlg" data-pj="SAERIS"><span class="g-name">SAERIS</span>Y tú vienes. Pero detrás.</div>
+<p class="g-act-line">Damon asiente. Les sigue a varios pasos de distancia.</p>
+<p class="g-act-line"><b>LOS VÁRKONYI.</b> Sirush y Aeris salen juntos. En la escalera, Sirush le pone una mano a su nieto en la espalda, justo encima de la cicatriz del ala. Aeris se tensa, pero no se aparta. Lázár se queda en la puerta. Mira a su madre. Mira a Genevieve.</p>
+<div class="g-dlg" data-pj="SIRUSH"><span class="g-name">SIRUSH</span>Ven a casa.</div>
+<div class="g-dlg" data-pj="LÁZÁR"><span class="g-name">LÁZÁR</span>Ya he estado cien años en una casa que no era mía.</div>
+<p class="g-act-line">Sirush tarda en contestar. Al final, asiente.</p>
+<p class="g-act-line"><b>LAS ASHWORTH.</b> Marian y Adela bajan de la mano. Adela ya no se rasca los dedos. Genevieve baja detrás, con Lázár. El vestido de novia arrastra por la grava y deja un rastro húmedo.</p>
+<div class="g-dlg" data-pj="MARIAN"><span class="g-name">MARIAN</span><span class="g-par">(a Genevieve)</span>El lago sigue siendo tuyo.</div>
+<div class="g-dlg" data-pj="GENEVIEVE"><span class="g-name">GENEVIEVE</span>Lo sé. Por eso puedo irme.</div>
+<p class="g-act-line">Genevieve y Lázár echan a andar por el páramo, hacia la niebla. No se dan la mano. Caminan muy cerca.</p>
+<p class="g-act-line"><b>LOS KESSLER.</b> Katya lleva en brazos a Odette. La muñeca tiene la cara rota, pero el ojo-reloj se ha parado. Weinder baja detrás, despacio.</p>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span>Odette. El reloj…</div>
+<div class="g-dlg" data-pj="ODETTE"><span class="g-name">ODETTE</span>Se ha parado. No sé si eso es bueno.</div>
+<div class="g-dlg" data-pj="WEINDER"><span class="g-name">WEINDER</span>Yo tampoco.</div>
+<p class="g-act-line">Katya no le espera. Él las sigue.</p>
+<p class="g-act-line"><b>LOS BATHORY.</b> Vallora sale con una sombrilla negra abierta. Gala, a su lado, ya está dibujando el amanecer. Elizabeth se detiene en el último escalón, donde llega el sol. Mira a la condesa.</p>
+<div class="g-dlg" data-pj="ELIZABETH"><span class="g-name">ELIZABETH</span>¿Me quemaré?</div>
+<div class="g-dlg" data-pj="VALLORA"><span class="g-name">VALLORA</span>Un poco. Como todas.</div>
+<p class="g-act-line">Elizabeth enciende un cigarro y entra en la sombra de la sombrilla, junto a Vallora. Por primera vez, no fuma sola.</p>
+<p class="g-act-line"><b>LAS RAVENSCROFT.</b> Belladona y Wren salen las últimas. Belladona vuelve a ser joven, con el maquillaje de colores corrido. Wren lleva el estuche de escritura vacío. Se detiene en la puerta y se vuelve a mirar el vestíbulo.</p>
+<p class="g-act-line">Dentro, junto a la escalera, Agatha sigue sola. Vieja. No ha cambiado con el sol.</p>
+<p class="g-act-line">Wren cierra la puerta.</p>
+<h4 class="g-scene">Escena 22. INT. VESTÍBULO DE LA MANSIÓN — AMANECER</h4>
+<p class="g-act-line">La casa está vacía. Las velas, apagadas. El polvo de oro de Severina brilla en el suelo, al pie de la escalera.</p>
+<p class="g-act-line">La puerta vuelve a abrirse. Entra Wren, sola. Ha olvidado algo: un lápiz de Gala, en el suelo. Lo recoge.</p>
+<p class="g-act-line">Al levantarse, queda frente a uno de los espejos de azogue podrido. Se mira. El mechón blanco. Las pecas. Los dedos manchados de tinta.</p>
+<p class="g-act-line">Se aparta un mechón de la cara.</p>
+<p class="g-act-line">En el reflejo, Wren no se mueve. La Wren del espejo la mira con unos ojos que no son los suyos: unos ojos antiguos y tranquilos, rodeados de un leve brillo dorado, como el polvo de la cara de Severina.</p>
+<p class="g-act-line">La Wren del espejo sonríe.</p>
+<p class="g-act-line">La Wren real, no.</p>
+<p class="g-act-line">O quizá sí. El plano no deja saberlo.</p>
+<p class="g-note"><i>Nota de producción: inserto rodado con doble de cuerpo o con postproducción. En el espejo, lentes de contacto de iris envejecido y un toque mínimo de polvo dorado en los pómulos. La Wren real, sin ninguno de los dos.</i></p>
+<p class="g-end">FUNDIDO A NEGRO.</p>
+<p class="g-end">FIN</p>
+    </article>
   </section>
 
   <section role="tabpanel" id="p-familias" aria-labelledby="t-familias" hidden>
@@ -317,7 +758,17 @@ function show(name){tabs.forEach(t=>{const on=t.id==="t-"+name;t.setAttribute("a
 tabs.forEach(t=>t.addEventListener("click",()=>show(t.id.slice(2))));
 document.querySelectorAll("[data-go]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();show(a.dataset.go)}));
 (()=>{let h=(location.hash||"").slice(1);let s=null;try{s=localStorage.getItem("bw-tab")}catch(e){}
-  const n=["historia","familias","reparto","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
+  const n=["historia","guion","familias","reparto","personaje"];show(n.includes(h)?h:(n.includes(s)?s:"historia"))})();
+
+
+/* guion: resaltar personaje */
+(()=>{const g=$("#guion"),sel=$("#g-pj");
+  [...new Set([...g.querySelectorAll(".g-dlg")].map(d=>d.dataset.pj))].sort((a,b)=>a.localeCompare(b,"es")).forEach(n=>sel.append(el("option",{value:n,text:n.charAt(0)+n.slice(1).toLowerCase()})));
+  sel.addEventListener("change",()=>{const v=sel.value;g.classList.toggle("filtering",!!v);
+    g.querySelectorAll(".g-dlg").forEach(d=>d.classList.toggle("hl",!!v&&d.dataset.pj===v));
+    const f=g.querySelector(".hl");if(f)f.scrollIntoView({behavior:"smooth",block:"center"})});
+  document.querySelectorAll(".g-chip").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"})}));
+})();
 
 /* state */
 const S={remote:false,pin:"",local:false,claims:{},db:null,user:null,uid:null,canAdmin:false,ready:false,openFam:null,claiming:null,err:"",offline:false};
