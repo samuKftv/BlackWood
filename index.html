@@ -1173,7 +1173,8 @@ function drawMoods(list){
 async function loadGal(asTeacher,modo){
   const g=$("#fx-gal");g.replaceChildren(el("p",{class:"note",style:"text-align:center",text:"Cargando la galería… puede tardar hasta 30 segundos."}));
   try{const r=await fxCall(asTeacher?{action:"galeria",pin:S.pin}:{action:"galeria",id:F.id,clave:F.clave});
-    if(!r.ok){g.replaceChildren(el("p",{class:"msg-bad",text:r.error==="pin"||r.error==="clave"?"Código incorrecto.":r.error==="cerrada"?"La galería está cerrada.":"No se pudo cargar la galería."}));return}
+    if(!r.ok){if(asTeacher&&(r.error==="pin"||r.error==="cerrada"||r.error==="clave")){g.replaceChildren(el("p",{class:"msg-bad",style:"text-align:center",text:"Código del profesor incorrecto. Vuelve a escribirlo."}));setPin("");return}
+      g.replaceChildren(el("p",{class:"msg-bad",text:r.error==="pin"||r.error==="clave"?"Código incorrecto.":r.error==="cerrada"?"La galería está cerrada.":"No se pudo cargar la galería."}));return}
     if(modo==="mood")drawMoods(r.fichas);else drawGal(r.fichas,asTeacher)}catch(e){g.replaceChildren(el("p",{class:"msg-bad",text:"No hay conexión con la hoja."}))}
 }
 function drawGal(list,asTeacher){
@@ -1193,15 +1194,26 @@ function drawGal(list,asTeacher){
 }
 async function fxResume(){if(!F.id||!F.clave||F.ficha)return;
   try{const r=await fxCall({action:"ficha",id:F.id,clave:F.clave});if(r.ok){F.ficha=r.ficha;F.galeria=r.galeria;drawFicha()}else{F.clave="";saveSess()}}catch(e){}}
+function setPin(v){S.pin=v;try{sessionStorage.setItem("bw-pin",v)}catch(e){}
+  const i=document.getElementById("pin"),st=document.getElementById("pin-st");if(i)i.value=v;if(st)st.textContent=v?"Modo profesor activo: puedes liberar roles.":"";
+  const t=$("#fx-teacher");if(t)t.dataset.k="";renderAll()}
 function renderTeacherFx(){
   const t=$("#fx-teacher");if(!t)return;
-  if(!S.remote||!S.pin){t.replaceChildren();return}
+  if(!S.remote){t.replaceChildren();return}
+  if(!S.pin){
+    if(t.dataset.k==="login")return;t.dataset.k="login";
+    const inp=el("input",{type:"password",id:"fx-pin",placeholder:"Código del profesor",autocomplete:"current-password",style:"font:inherit;font-size:16px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);min-width:0;flex:1 1 180px"});
+    const msg=el("span",{class:"note",id:"fx-pin-msg"});
+    const f=el("form",{class:"fx-teacher"},[el("span",{class:"note",text:"¿Eres el profesor? Entra con tu código para ver todos los moodboards y las fichas."}),
+      el("div",{class:"fx-acts",style:"flex:1 1 320px"},[inp,el("button",{class:"btn",type:"submit",text:"Entrar como profesor"})]),msg]);
+    f.addEventListener("submit",e=>{e.preventDefault();const v=inp.value.trim();if(!v)return;setPin(v);loadGal(true,"mood")});
+    t.replaceChildren(f);return}
   if(t.dataset.k===String(F.galeria)+S.pin)return;t.dataset.k=String(F.galeria)+S.pin;
   const st=el("span",{class:"note",text:"Modo profesor · galería "+(F.galeria?"abierta: todas ven todas las fichas.":"cerrada: cada alumna solo ve la suya.")});
   const tog=el("button",{class:"btn",type:"button",text:F.galeria?"Cerrar galería":"Abrir galería",onclick:async()=>{tog.disabled=true;tog.textContent="Un momento…";
     try{const r=await fxCall({action:"abrirGaleria",pin:S.pin,abierta:!F.galeria});if(r.ok)F.galeria=r.galeria;else st.textContent="Código del profesor incorrecto."}catch(e){st.textContent="No hay conexión con la hoja."}
     t.dataset.k="";renderTeacherFx();if(F.ficha)drawFicha()}});
-  t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver moodboards",onclick:()=>loadGal(true,"mood")}),el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
+  t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver moodboards",onclick:()=>loadGal(true,"mood")}),el("button",{class:"btn ghost",type:"button",text:"Salir del modo profesor",onclick:()=>{setPin("");$("#fx-gal").replaceChildren()}}),el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
 }
 
 (()=>{const t=document.getElementById("fx-cats");if(t)CATS.forEach(([p,,q,m])=>t.append(el("tr",{},[el("td",{},[el("code",{text:p})]),el("td",{text:q}),el("td",{text:String(m)})])))})();
