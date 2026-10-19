@@ -173,14 +173,27 @@ function ficha_(fila, conCarpeta) {
 
 /* ---------- web ---------- */
 
-function doGet() {
+function datosPublicos_() {
+  const cache = CacheService.getScriptCache();
+  const enCache = cache.get('publico');
+  if (enCache) return enCache;
   const claves = claves_();
   const claims = leer_().map(c => {
     const o = Object.assign({}, c);
     delete o.carpeta;          // el enlace de la carpeta nunca se publica
     return o;
   });
-  return salida_({ ok: true, claims: claims, conClave: Object.keys(claves), galeria: galeriaAbierta_() });
+  const json = JSON.stringify({ ok: true, claims: claims, conClave: Object.keys(claves), galeria: galeriaAbierta_() });
+  try { cache.put('publico', json, 20); } catch (e) {}
+  return json;
+}
+
+function limpiaCache_() {
+  try { CacheService.getScriptCache().remove('publico'); } catch (e) {}
+}
+
+function doGet() {
+  return ContentService.createTextOutput(datosPublicos_()).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
@@ -213,6 +226,7 @@ function doPost(e) {
   /* --- escrituras --- */
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
+  limpiaCache_();
   try {
     const sh = hoja_();
     const ids = sh.getRange(1, 1, Math.max(sh.getLastRow(), 1), 1).getValues().map(r => String(r[0]));
@@ -263,6 +277,7 @@ function doPost(e) {
 
     return salida_({ ok: false, error: 'accion' });
   } finally {
+    limpiaCache_();
     lock.releaseLock();
   }
 }

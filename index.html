@@ -955,7 +955,8 @@ function renderLedger(){
   });
   const total=Object.keys(S.claims).length;
   const sync=$("#sync");
-  if(!S.ready)sync.textContent="Conectando con el reparto…";
+  if(!S.ready)sync.textContent="Conectando con el reparto… (puede tardar hasta 30 segundos)";
+  else if(S.remote&&S.offline)sync.textContent=(S.stale?"Mostrando los datos guardados de las "+new Date(S.stale).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})+". ":"")+"Google no responde ahora mismo; reintentando automáticamente…";
   else if(S.remote)sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza cada 15 segundos.";
   else if(S.local)sync.textContent=total+" de 17 alumnas con rol reservado · modo local: se guarda solo en este navegador. Para compartirlo en directo, abre la web desde claude.ai con tu cuenta.";
   else sync.textContent=total+" de 17 alumnas con rol reservado · se actualiza en directo.";
@@ -1209,13 +1210,26 @@ async function api(payload){
   const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload)});
   return r.json();
 }
+function applyData(r){
+  const m={};(r.claims||[]).forEach(c=>{if(c&&c.id&&c.alumna)m[c.id]={...c,custom:c.custom===true||c.custom==="TRUE"||c.custom==="true"}});
+  S.claims=m;S.ready=true;
+  if(Array.isArray(r.conClave))F.conClave=r.conClave.map(String);if(typeof r.galeria==="boolean")F.galeria=r.galeria;
+}
+let retryT=null,fails=0;
 async function refresh(){
+  clearTimeout(retryT);
   try{
-    const r=await (await fetch(SHEET_URL+"?t="+Date.now())).json();
-    const m={};(r.claims||[]).forEach(c=>{if(c&&c.id&&c.alumna)m[c.id]={...c,custom:c.custom===true||c.custom==="TRUE"||c.custom==="true"}});
-    S.claims=m;S.ready=true;S.offline=false;
-    if(Array.isArray(r.conClave))F.conClave=r.conClave.map(String);if(typeof r.galeria==="boolean")F.galeria=r.galeria;
-  }catch(e){S.ready=true;S.offline=true}
+    const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),30000);
+    const res=await fetch(SHEET_URL+"?t="+Date.now(),{signal:ctl.signal,cache:"no-store"});clearTimeout(to);
+    const r=await res.json();if(!r||!r.ok)throw new Error("respuesta");
+    applyData(r);S.offline=false;S.stale=0;fails=0;
+    try{localStorage.setItem("bw-cache",JSON.stringify({t:Date.now(),r}))}catch(e){}
+  }catch(e){
+    S.offline=true;fails++;
+    if(!S.ready){try{const c=JSON.parse(localStorage.getItem("bw-cache")||"null");if(c&&c.r){applyData(c.r);S.stale=c.t}}catch(_){}}
+    S.ready=true;
+    retryT=setTimeout(refresh,Math.min(5000*Math.pow(2,fails-1),30000));
+  }
   renderAll();
 }
 function teacherBox(){
