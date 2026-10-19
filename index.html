@@ -184,6 +184,9 @@ a.btn{text-decoration:none;display:inline-block}
 .fx-card{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--fc);border-radius:4px;padding:16px;display:grid;gap:12px}
 .fx-card h3{font-size:22px}
 .fx-cats code,.fx-how code{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
+.mood-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.mood-card{align-content:start}
+.mood-card a img{display:block;width:100%;height:auto;border-radius:4px;border:1px solid var(--line)}
 .fx-teacher{border:1px solid var(--gold);border-radius:4px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface)}
 </style>
 
@@ -735,6 +738,7 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="fx-how">
       <div class="box"><span class="label">Referencias</span><h3 style="font-size:18px">Tu moodboard</h3><p class="note">Mínimo 100 imágenes, pensadas para el aspecto <b>después</b> de la transformación, que es el que modelarás en 3D. Empieza el nombre de cada archivo por su categoría. Ej.: <code>PIEL_porcelana_01.jpg</code></p></div>
       <div class="box"><span class="label">Bocetos</span><h3 style="font-size:18px">Thumbnails y bocetos</h3><p class="note">Pon al principio del nombre <code>BOCETO_</code>. Ej.: <code>BOCETO_siluetas_01.jpg</code></p></div>
+      <div class="box"><span class="label">Moodboard</span><h3 style="font-size:18px">El tablero final</h3><p class="note">Exporta tu tablero de PureRef como PNG y súbelo con un nombre que empiece por <code>MOODBOARD_</code>. Ej.: <code>MOODBOARD_Nombre_v01.png</code>. Sube también el <code>.pur</code>.</p></div>
       <div class="box"><span class="label">Character Sheet</span><h3 style="font-size:18px">La lámina final</h3><p class="note">Pon al principio del nombre <code>CS_</code>. Ej.: <code>CS_Odette_v01.pdf</code>. Puede ser imagen o PDF.</p></div>
     </div>
     <div class="box fx-cats">
@@ -1141,15 +1145,35 @@ function drawFicha(){
     f.tieneCarpeta&&!n?el("p",{class:"banner",text:"Tu carpeta está vacía. Sube tus imágenes y pulsa «Actualizar» (pueden tardar un minuto en aparecer)."}):null,
     block("Character Sheet",f.img.cs,"Todavía no hay ningún archivo que empiece por CS_.",true),
     block("Bocetos y thumbnails",f.img.bocetos,"Todavía no hay ningún archivo que empiece por BOCETO_."),
-    ...moodBlocks(f.img.refs),
+    block("Moodboard final",splitMood(f.img.refs).mood,"Todavía no has subido tu moodboard. Súbelo a tu carpeta con un nombre que empiece por MOODBOARD_.",true),
+    ...moodBlocks(splitMood(f.img.refs).rest),
     F.galeria?el("div",{class:"fx-acts"},[el("button",{class:"btn",type:"button",text:F.verGal?"Ocultar la galería de la clase":"Ver la galería de la clase",onclick:()=>{F.verGal=!F.verGal;if(F.verGal)loadGal();else $("#fx-gal").replaceChildren();drawFicha()}})]):null
   ]));
 }
-async function loadGal(asTeacher){
+const isMood=o=>String(o.n||"").toUpperCase().startsWith("MOODBOARD_");
+const splitMood=refs=>({mood:refs.filter(isMood),rest:refs.filter(o=>!isMood(o))});
+const fDate=t=>{try{return new Date(t).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}catch(e){return ""}};
+function drawMoods(list){
+  const g=$("#fx-gal");
+  list.sort((a,b)=>FAM.findIndex(f=>f.id===a.fam)-FAM.findIndex(f=>f.id===b.fam)||String(a.id).localeCompare(String(b.id)));
+  const rows=list.map(f=>({f,...splitMood(f.img.refs)}));
+  const done=rows.filter(r=>r.mood.length);const miss=rows.filter(r=>!r.mood.length);
+  g.replaceChildren(
+    el("h2",{style:"text-align:center;font-size:28px",text:"Moodboards"}),
+    el("p",{class:"note",style:"text-align:center",text:done.length+" de "+rows.length+" han subido su moodboard."+(miss.length?" Faltan: "+miss.map(r=>r.f.alumna).join(", ")+".":"")}),
+    el("div",{class:"mood-grid"},rows.map(({f,mood,rest})=>{const last=mood[0];const nRef=CATS.reduce((a,c)=>a+Math.min(rest.filter(o=>catOf(o)===c[0]).length,c[3]),0);
+      return el("div",{class:"fx-card mood-card",style:"--fc:"+famColor(f.fam)},[
+        el("div",{},[el("span",{class:"label",text:(famOf(f.fam)||{n:""}).n+" · "+f.alumna}),el("h3",{style:"font-size:19px",text:pjName(f)})]),
+        el("div",{class:"fx-acts"},[el("span",{class:"count "+(last?"ok":"low"),text:last?"Moodboard subido · "+fDate(last.t)+(mood.length>1?" · "+mood.length+" versiones":""):"Falta el moodboard"}),
+          el("span",{class:"count "+(nRef>=CAT_MIN?"ok":"low"),text:"Banco "+nRef+"/"+CAT_MIN}),
+          f.carpeta?el("a",{class:"btn ghost",href:f.carpeta,target:"_blank",rel:"noopener",text:"Carpeta ↗"}):null]),
+        last?img(last):el("p",{class:"empty",text:"Todavía no hay ningún archivo que empiece por MOODBOARD_."})])})));
+}
+async function loadGal(asTeacher,modo){
   const g=$("#fx-gal");g.replaceChildren(el("p",{class:"note",style:"text-align:center",text:"Cargando la galería… puede tardar hasta 30 segundos."}));
   try{const r=await fxCall(asTeacher?{action:"galeria",pin:S.pin}:{action:"galeria",id:F.id,clave:F.clave});
     if(!r.ok){g.replaceChildren(el("p",{class:"msg-bad",text:r.error==="pin"||r.error==="clave"?"Código incorrecto.":r.error==="cerrada"?"La galería está cerrada.":"No se pudo cargar la galería."}));return}
-    drawGal(r.fichas,asTeacher)}catch(e){g.replaceChildren(el("p",{class:"msg-bad",text:"No hay conexión con la hoja."}))}
+    if(modo==="mood")drawMoods(r.fichas);else drawGal(r.fichas,asTeacher)}catch(e){g.replaceChildren(el("p",{class:"msg-bad",text:"No hay conexión con la hoja."}))}
 }
 function drawGal(list,asTeacher){
   const g=$("#fx-gal");
@@ -1161,8 +1185,9 @@ function drawGal(list,asTeacher){
           el("div",{class:"fx-acts"},[el("span",{class:"tag",text:all.length+" imágenes"}),asTeacher&&f.carpeta?el("a",{class:"btn ghost",href:f.carpeta,target:"_blank",rel:"noopener",text:"Carpeta ↗"}):null,asTeacher&&!f.tieneCarpeta?el("span",{class:"tag",text:"Sin carpeta"}):null])]),
         f.img.cs.length?block("Character Sheet",f.img.cs,"",true):null,
         f.img.bocetos.length?block("Bocetos",f.img.bocetos,""):null,
-        catLine(f.img.refs),
-        f.img.refs.length?el("div",{class:"fx-block"},[el("h3",{text:"Moodboard · "+f.img.refs.length}),grid(f.img.refs)]):null,
+        splitMood(f.img.refs).mood.length?block("Moodboard final",splitMood(f.img.refs).mood,"",true):(asTeacher?el("span",{class:"count low",text:"Falta el moodboard"}):null),
+        catLine(splitMood(f.img.refs).rest),
+        splitMood(f.img.refs).rest.length?el("div",{class:"fx-block"},[el("h3",{text:"Banco de imágenes · "+splitMood(f.img.refs).rest.length}),grid(splitMood(f.img.refs).rest)]):null,
         !all.length?el("p",{class:"empty",text:"Todavía sin imágenes."}):null])}));
 }
 async function fxResume(){if(!F.id||!F.clave||F.ficha)return;
@@ -1175,7 +1200,7 @@ function renderTeacherFx(){
   const tog=el("button",{class:"btn",type:"button",text:F.galeria?"Cerrar galería":"Abrir galería",onclick:async()=>{tog.disabled=true;tog.textContent="Un momento…";
     try{const r=await fxCall({action:"abrirGaleria",pin:S.pin,abierta:!F.galeria});if(r.ok)F.galeria=r.galeria;else st.textContent="Código del profesor incorrecto."}catch(e){st.textContent="No hay conexión con la hoja."}
     t.dataset.k="";renderTeacherFx();if(F.ficha)drawFicha()}});
-  t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
+  t.replaceChildren(el("div",{class:"fx-teacher"},[st,el("div",{class:"fx-acts"},[tog,el("button",{class:"btn ghost",type:"button",text:"Ver moodboards",onclick:()=>loadGal(true,"mood")}),el("button",{class:"btn ghost",type:"button",text:"Ver todas las fichas",onclick:()=>loadGal(true)})])]));
 }
 
 (()=>{const t=document.getElementById("fx-cats");if(t)CATS.forEach(([p,,q,m])=>t.append(el("tr",{},[el("td",{},[el("code",{text:p})]),el("td",{text:q}),el("td",{text:String(m)})])))})();
