@@ -187,6 +187,8 @@ a.btn{text-decoration:none;display:inline-block}
 .mood-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
 .mood-card{align-content:start}
 .mood-card a img{display:block;width:100%;height:auto;border-radius:4px;border:1px solid var(--line)}
+.th-wait{aspect-ratio:4/3;background:var(--raise)}
+.th-none{aspect-ratio:4/3;background:var(--raise);color:var(--muted);font-size:13px}
 .fx-teacher{border:1px solid var(--gold);border-radius:4px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface)}
 </style>
 
@@ -1058,9 +1060,30 @@ const F={id:"",clave:"",ficha:null,fichas:null,galeria:false,conClave:[],busy:fa
 try{const o=JSON.parse(sessionStorage.getItem("bw-ficha")||"{}");F.id=o.id||"";F.clave=o.clave||""}catch(e){}
 const famColor=id=>(famOf(id)||{c:"var(--gold)"}).c;
 const pjName=c=>c.personaje||((famOf(c.fam)||{roles:[]}).roles.find(r=>r.id===c.id)||{}).name||c.roleName||c.id;
+const TH=new Map(),THQ=new Set(),THW=new Map();let thBusy=0,thLegacy=false;
+function thCred(){if(S.pin)return{pin:S.pin};if(F.id&&F.clave)return{id:F.id,clave:F.clave};return null}
+function thDirect(i,id){if(i.dataset.d)return;i.dataset.d=1;i.src="https://drive.google.com/thumbnail?id="+id+"&sz=w800";
+  i.addEventListener("error",()=>{if(i.dataset.f)return;i.dataset.f=1;i.src="https://lh3.googleusercontent.com/d/"+id+"=w800";
+    i.addEventListener("error",()=>{i.classList.add("th-none");i.alt="Sin vista previa";},{once:true})},{once:true})}
+function thSet(id,src){(THW.get(id)||[]).forEach(i=>{if(src){i.src=src;i.classList.remove("th-wait")}else{i.classList.remove("th-wait");thDirect(i,id)}});THW.delete(id)}
+async function thPump(){
+  while(thBusy<3&&THQ.size){
+    const ids=[...THQ].slice(0,6);ids.forEach(id=>THQ.delete(id));const cred=thCred();
+    if(thLegacy||!cred){ids.forEach(id=>thSet(id,null));continue}
+    thBusy++;
+    (async()=>{try{const r=await fxCall({action:"thumbs",ids,lado:700,...cred});
+        if(!r||!r.ok){if(r&&r.error==="accion")thLegacy=true;ids.forEach(id=>thSet(id,null))}
+        else ids.forEach(id=>{const v=r.imgs&&r.imgs[id];const src=v?"data:"+v.mime+";base64,"+v.data:null;if(src)TH.set(id,src);thSet(id,src)})}
+      catch(e){ids.forEach(id=>thSet(id,null))}
+      thBusy--;thPump()})();
+  }
+}
+const thObs=("IntersectionObserver" in window)?new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;thObs.unobserve(e.target);const id=e.target.dataset.tid;
+  if(TH.has(id)){e.target.src=TH.get(id);e.target.classList.remove("th-wait");return}
+  (THW.get(id)||THW.set(id,[]).get(id)).push(e.target);THQ.add(id)});thPump()},{rootMargin:"400px"}):null;
 function img(o,cls){const a=el("a",{href:"https://drive.google.com/file/d/"+o.id+"/view",target:"_blank",rel:"noopener",title:o.n});
-  const i=el("img",{src:"https://drive.google.com/thumbnail?id="+o.id+"&sz=w800",alt:o.n,loading:"lazy",referrerpolicy:"no-referrer"});
-  i.addEventListener("error",()=>{if(!i.dataset.f){i.dataset.f=1;i.src="https://lh3.googleusercontent.com/d/"+o.id+"=w800"}},{once:false});
+  const i=el("img",{alt:o.n,"data-tid":o.id,class:"th-wait"});
+  if(TH.has(o.id)){i.src=TH.get(o.id);i.classList.remove("th-wait")}else if(thObs)thObs.observe(i);else thDirect(i,o.id);
   a.append(i);return a}
 function grid(list,big){return el("div",{class:"mood"+(big?" big":"")},list.map(o=>img(o)))}
 function block(title,list,empty,big){return el("div",{class:"fx-block"},[el("h3",{text:title+(list.length?" · "+list.length:"")}),list.length?grid(list,big):el("p",{class:"empty",text:empty})])}

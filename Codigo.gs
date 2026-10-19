@@ -171,6 +171,29 @@ function ficha_(fila, conCarpeta) {
   return o;
 }
 
+
+/** Miniaturas servidas por el script con los permisos del profesor, para no depender de cómo estén compartidos los archivos. */
+function miniatura_(id, lado) {
+  const cache = CacheService.getScriptCache();
+  const clave = 'th_' + lado + '_' + id;
+  const enCache = cache.get(clave);
+  if (enCache) return JSON.parse(enCache);
+  const token = ScriptApp.getOAuthToken();
+  const meta = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(id) + '?fields=thumbnailLink,mimeType&supportsAllDrives=true',
+    { headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true });
+  if (meta.getResponseCode() !== 200) return null;
+  const link = JSON.parse(meta.getContentText()).thumbnailLink;
+  if (!link) return null;
+  const url = link.replace(/=s\d+(-[a-z0-9-]*)?$/i, '') + '=s' + lado;
+  const img = UrlFetchApp.fetch(url, { headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true });
+  if (img.getResponseCode() !== 200) return null;
+  const blob = img.getBlob();
+  const out = { mime: blob.getContentType() || 'image/jpeg', data: Utilities.base64Encode(blob.getBytes()) };
+  const json = JSON.stringify(out);
+  if (json.length < 95000) { try { cache.put(clave, json, 21600); } catch (e) {} }
+  return out;
+}
+
 /* ---------- web ---------- */
 
 function datosPublicos_() {
@@ -210,6 +233,19 @@ function doPost(e) {
       if (!clave || clave !== String(d.clave || '')) return salida_({ ok: false, error: 'clave' });
     }
     return salida_({ ok: true, ficha: ficha_(fila, true), galeria: galeriaAbierta_() });
+  }
+
+  if (d.action === 'thumbs') {
+    const esProfe = d.pin && d.pin === PIN_DOCENTE;
+    if (!esProfe) {
+      const clave = claves_()[String(d.id)];
+      if (!clave || clave !== String(d.clave || '')) return salida_({ ok: false, error: 'clave' });
+    }
+    const ids = (Array.isArray(d.ids) ? d.ids : []).slice(0, 8).map(String);
+    const lado = Math.min(Math.max(parseInt(d.lado, 10) || 640, 200), 1600);
+    const imgs = {};
+    ids.forEach(id => { try { imgs[id] = miniatura_(id, lado); } catch (e) { imgs[id] = null; } });
+    return salida_({ ok: true, imgs: imgs });
   }
 
   if (d.action === 'galeria') {
